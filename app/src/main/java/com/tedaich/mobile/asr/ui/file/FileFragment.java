@@ -1,4 +1,4 @@
-package com.tedaich.mobile.asr.ui.home;
+package com.tedaich.mobile.asr.ui.file;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,17 +12,17 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import com.tedaich.mobile.asr.R;
 
-public class HomeFragment extends Fragment {
+public class FileFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
+    private FileViewModel fileViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        fileViewModel =
+                ViewModelProviders.of(this).get(FileViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_file, container, false);
         final TextView textView = root.findViewById(R.id.text_home);
-        homeViewModel.getText().observe(this, new Observer<String>() {
+        fileViewModel.getText().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

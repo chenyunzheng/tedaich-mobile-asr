@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_file">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.tedaich.mobile.asr.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_file"
+        android:name="com.tedaich.mobile.asr.ui.file.FileFragment"
+        android:label="@string/title_file"
+        tools:layout="@layout/fragment_file" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.tedaich.mobile.asr.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_recorder"
+        android:name="com.tedaich.mobile.asr.ui.recorder.RecorderFragment"
+        android:label="@string/title_recorder"
+        tools:layout="@layout/fragment_recorder" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.tedaich.mobile.asr.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_me"
+        android:name="com.tedaich.mobile.asr.ui.me.MyFragment"
+        android:label="@string/title_me"
+        tools:layout="@layout/fragment_me" />
 </navigation>
