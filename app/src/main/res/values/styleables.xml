@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AudioWaveView">
+        <attr name="center_line_half_offset" format="integer"/>
+        <attr name="wave_half_offset" format="integer"/>
+    </declare-styleable>
+</resources>

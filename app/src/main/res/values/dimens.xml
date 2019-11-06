@@ -2,4 +2,18 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="recorder_width_height">70dp</dimen>
+    <dimen name="audio_wave_center_line_width">1dp</dimen>
+    <dimen name="audio_wave_wave_width">1dp</dimen>
+    <dimen name="audio_wave_ordinary_line_width">1dp</dimen>
+
+
+
+    <dimen name="spacing_normal">16dp</dimen>
+    <dimen name="btn_large_size">64dp</dimen>
+    <dimen name="btn_medium_size">56dp</dimen>
+    <dimen name="btn_small_size">48dp</dimen>
+    <dimen name="btn_tiny_size">40dp</dimen>
+
+
 </resources>

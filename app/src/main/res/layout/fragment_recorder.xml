@@ -1,20 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
- 
-    <TextView
-        android:id="@+id/text_dashboard"
+    android:layout_height="match_parent"
+    android:layout_centerHorizontal="false">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fixedlist_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:itemCount="8"
+        tools:listitem="@layout/record_item_layout">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/recorder_top_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="343dp" />
+
+    <LinearLayout
+        android:id="@+id/Recorder_LinearLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constrainedHeight="false"
+        app:layout_constrainedWidth="false"
+        app:layout_constraintBottom_toTopOf="@+id/recorder_bottom_guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/recorder_top_guideline">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/recorder_timer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/recorder_timer"
+                android:textAlignment="center"
+                android:textSize="30sp" />
+
+            <com.tedaich.mobile.asr.widget.AudioWaveView
+                android:id="@+id/audio_wave_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btn_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/spacing_normal"
+                android:adjustViewBounds="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@null"
+                android:cropToPadding="true"
+                android:padding="@dimen/spacing_normal"
+                android:scaleType="center"
+                app:srcCompat="@drawable/ic_delete_forever" />
+
+            <Button
+                android:id="@+id/btn_recorder"
+                android:layout_width="@dimen/recorder_width_height"
+                android:layout_height="@dimen/recorder_width_height"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/btn_circle_record"
+                android:gravity="center_vertical"
+                android:onClick="handleRecordPause" />
+
+            <ImageButton
+                android:id="@+id/btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:adjustViewBounds="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@null"
+                android:cropToPadding="true"
+                android:padding="@dimen/spacing_normal"
+                android:scaleType="center"
+                app:srcCompat="@drawable/ic_save" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/recorder_bottom_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="65dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
