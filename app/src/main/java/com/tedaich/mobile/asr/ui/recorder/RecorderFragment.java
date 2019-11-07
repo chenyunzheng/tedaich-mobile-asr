@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,13 +12,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.tedaich.mobile.asr.R;
-import com.tedaich.mobile.asr.util.AndroidUtils;
 
 public class RecorderFragment extends Fragment {
 
     private RecorderViewModel recorderViewModel;
 
-    private Button btnRecorder;
+    private ImageButton iBtnRecorder;
     private boolean isRecording = false;
 
 
@@ -33,20 +32,17 @@ public class RecorderFragment extends Fragment {
 //                textView.setText(s);
 //            }
 //        });
-        btnRecorder = root.findViewById(R.id.btn_recorder);
-        btnRecorder.setOnClickListener(this::handleRecordPause);
+        iBtnRecorder = root.findViewById(R.id.btn_recorder);
+        iBtnRecorder.setOnClickListener(this::handleRecordPause);
         return root;
     }
 
     private void handleRecordPause(View view) {
-        Button button = (Button) view;
+        ImageButton imageButton = (ImageButton) view;
         if (isRecording){
-            button.setText("");
-            button.setBackground(getResources().getDrawable(R.drawable.btn_circle_record));
+            imageButton.setImageDrawable(getResources().getDrawable(R.drawable.btn_circle_record));
         } else {
-            button.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            AndroidUtils.addButtonIcon(button, R.drawable.ic_pause, null, "");
-            button.setBackground(getResources().getDrawable(R.drawable.btn_circle_pause));
+            imageButton.setImageDrawable(getResources().getDrawable(R.drawable.btn_circle_pause));
         }
         isRecording = !isRecording;
     }
@@ -54,7 +50,7 @@ public class RecorderFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Button recorder = getActivity().findViewById(R.id.btn_recorder);
+        ImageButton recorder = getActivity().findViewById(R.id.btn_recorder);
         System.out.println("onActivityCreated");
 
     }

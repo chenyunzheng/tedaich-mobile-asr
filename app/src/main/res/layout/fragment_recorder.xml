@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         tools:itemCount="8"
-        tools:listitem="@layout/record_item_layout">
+        tools:listitem="@layout/recorder_item_layout">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -26,15 +26,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="343dp" />
+        app:layout_constraintGuide_end="281dp" />
 
     <LinearLayout
         android:id="@+id/Recorder_LinearLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constrainedHeight="false"
-        app:layout_constrainedWidth="false"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@+id/recorder_bottom_guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -43,7 +43,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
@@ -57,12 +57,13 @@
             <com.tedaich.mobile.asr.widget.AudioWaveView
                 android:id="@+id/audio_wave_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="100dp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_narrow"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -78,16 +79,18 @@
                 android:cropToPadding="true"
                 android:padding="@dimen/spacing_normal"
                 android:scaleType="center"
-                app:srcCompat="@drawable/ic_delete_forever" />
+                app:srcCompat="@drawable/ic_clear" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/btn_recorder"
-                android:layout_width="@dimen/recorder_width_height"
-                android:layout_height="@dimen/recorder_width_height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/btn_circle_record"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@null"
                 android:gravity="center_vertical"
-                android:onClick="handleRecordPause" />
+                android:scaleType="center"
+                app:srcCompat="@drawable/btn_circle_record" />
 
             <ImageButton
                 android:id="@+id/btn_save"
@@ -101,7 +104,7 @@
                 android:cropToPadding="true"
                 android:padding="@dimen/spacing_normal"
                 android:scaleType="center"
-                app:srcCompat="@drawable/ic_save" />
+                app:srcCompat="@drawable/ic_done" />
         </LinearLayout>
 
     </LinearLayout>

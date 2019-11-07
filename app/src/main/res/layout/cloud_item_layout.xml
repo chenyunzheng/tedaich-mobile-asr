@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/include_recorder_item"
+        layout="@layout/recorder_item_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/audio_cloud_upload"
+            android:layout_width="@dimen/btn_upload_width"
+            android:layout_height="@dimen/btn_tiny_size"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/spacing_narrow"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@null"
+            android:drawableStart="@drawable/ic_cloud_upload"
+            android:onClick="handleAudioUploadToCloud"
+            android:text="@string/btn_upload_tips_name"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/audio_transfer_text"
+            android:layout_width="@dimen/btn_transfer_width"
+            android:layout_height="@dimen/btn_tiny_size"
+            android:layout_centerInParent="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@null"
+            android:drawableStart="@drawable/ic_speech_to_text"
+            android:onClick="handleAudioTransferText"
+            android:text="@string/btn_transfer_tips_name"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/more_option"
+            android:layout_width="@dimen/btn_more_width"
+            android:layout_height="@dimen/btn_tiny_size"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/spacing_narrow"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@null"
+            android:drawableStart="@drawable/ic_more_horiz"
+            android:onClick="handleMoreOption"
+            android:text="@string/btn_more_tips_name"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+</LinearLayout>

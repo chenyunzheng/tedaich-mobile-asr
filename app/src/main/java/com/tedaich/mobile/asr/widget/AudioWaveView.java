@@ -67,8 +67,7 @@ public class AudioWaveView extends View {
 
         buf = new ArrayList<>();
         buf.add((short) 1000);
-        buf.add((short) 2000);
-        buf.add((short) 10000);
+        buf.add((short) 1000);
         buf.add((short) 500);
         buf.add((short) 500);
         buf.add((short) 500);
@@ -97,7 +96,7 @@ public class AudioWaveView extends View {
         int rateY = 1;
         float divider = 10f;
         int marginRight=30;
-        float rate = 50.0f;
+        float rate = 5.0f;
         for (int i = 0; i < buf.size(); i++) {
             float y = centerLinePos - buf.get(i)/rate;// 调节缩小比例，调节基准线
             float x = (i) * divider;

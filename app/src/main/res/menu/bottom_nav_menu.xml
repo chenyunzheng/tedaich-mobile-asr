@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_file"
-        android:icon="@drawable/ic_nav_file"
-        android:title="@string/title_file"/>
+        android:id="@+id/navigation_cloud"
+        android:icon="@drawable/ic_nav_cloud"
+        android:title="@string/title_cloud"/>
 
     <item
         android:id="@+id/navigation_recorder"

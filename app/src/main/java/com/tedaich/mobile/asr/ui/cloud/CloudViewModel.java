@@ -1,14 +1,14 @@
-package com.tedaich.mobile.asr.ui.file;
+package com.tedaich.mobile.asr.ui.cloud;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class FileViewModel extends ViewModel {
+public class CloudViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public FileViewModel() {
+    public CloudViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is home fragment");
     }
