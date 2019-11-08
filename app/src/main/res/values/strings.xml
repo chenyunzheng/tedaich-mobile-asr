@@ -11,4 +11,8 @@
     <string name="btn_transfer_tips_name">转成文字</string>
     <string name="btn_more_tips_name">更多</string>
 
+    <string name="search_title">搜索</string>
+    <string name="search_hint">请输入语音名称</string>
+
+
 </resources>
