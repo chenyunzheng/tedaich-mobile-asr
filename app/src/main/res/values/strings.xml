@@ -14,5 +14,7 @@
     <string name="search_title">搜索</string>
     <string name="search_hint">请输入语音名称</string>
 
+    <string name="default_icon_name">icon_name</string>
+
 
 </resources>

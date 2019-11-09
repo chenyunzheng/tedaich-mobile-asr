@@ -6,4 +6,5 @@
 
     <color name="ic_launcher_background">#FFFFFF</color>
     <color name="app_background">#FFFFFF</color>
+    <color name="app_gray_background">#ACACAC</color>
 </resources>

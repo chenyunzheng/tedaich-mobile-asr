@@ -36,13 +36,6 @@ public class CloudFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         cloudViewModel = ViewModelProviders.of(this).get(CloudViewModel.class);
         View root = inflater.inflate(R.layout.fragment_cloud, container, false);
-//        final TextView textView = root.findViewById(R.id.text_home);
-//        cloudViewModel.getText().observe(this, new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
         audioRecyclerView = root.findViewById(R.id.audio_recycler_view);
         audioRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
