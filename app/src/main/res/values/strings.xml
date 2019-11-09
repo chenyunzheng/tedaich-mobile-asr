@@ -14,7 +14,13 @@
     <string name="search_title">搜索</string>
     <string name="search_hint">请输入语音名称</string>
 
+    <string name="default_user_name">您好!</string>
+    <string name="default_user_action">请登录</string>
     <string name="default_icon_name">icon_name</string>
-
+    <string name="default_icon_info">icon_info</string>
+    <string name="user_item_share_name">推荐给好友</string>
+    <string name="user_item_settings_name">通用设置</string>
+    <string name="user_item_feedback_help_name">帮助与反馈</string>
+    <string name="user_item_about_name">关于我们</string>
 
 </resources>

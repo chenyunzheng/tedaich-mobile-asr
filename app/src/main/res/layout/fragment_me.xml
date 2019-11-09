@@ -2,29 +2,131 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/text_notifications"
+    <RelativeLayout
+        android:id="@+id/UserInfo_RelativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="252dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.tedaich.mobile.asr.widget.UserItemView
+        <ImageView
+            android:id="@+id/user_back_image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/user_back_image_height"
+            android:adjustViewBounds="true"
+            android:contentDescription="@null"
+            android:scaleType="center"
+            app:srcCompat="@color/colorPrimary" />
+
+        <com.tedaich.mobile.asr.widget.CircleImageView
+            android:id="@+id/user_front_image"
+            android:layout_width="@dimen/user_front_image_size"
+            android:layout_height="@dimen/user_front_image_size"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="true"
+            android:contentDescription="@null"
+            app:srcCompat="@raw/default_user_profile" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/user_back_image"
+            android:layout_marginBottom="@dimen/spacing_narrow"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/divider_line"
+                android:layout_width="1dp"
+                android:layout_height="@dimen/spacing_wide"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="@dimen/spacing_wide"
+                android:background="@color/app_background"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/divider_line"
+                android:text="@string/default_user_name"
+                android:textColor="@color/app_background"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/user_action"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_normal"
+                android:layout_toEndOf="@id/divider_line"
+                android:text="@string/default_user_action"
+                android:textColor="@color/design_default_color_primary_dark"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/UserItem_LinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_notifications" />
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/UserInfo_RelativeLayout">
+
+        <com.tedaich.mobile.asr.widget.UserItemView
+            android:id="@+id/share_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:left_icon="@drawable/ic_share"
+            app:left_text="@string/user_item_share_name"
+            app:right_text=""
+            app:show_bottom_line="true"
+            app:show_left_icon="true"
+            app:show_right_arrow="true" >
+
+        </com.tedaich.mobile.asr.widget.UserItemView>
+
+        <com.tedaich.mobile.asr.widget.UserItemView
+            android:id="@+id/settings_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:left_icon="@drawable/ic_settings"
+            app:left_text="@string/user_item_settings_name"
+            app:right_text=""
+            app:show_bottom_line="true"
+            app:show_left_icon="true"
+            app:show_right_arrow="true" >
+
+        </com.tedaich.mobile.asr.widget.UserItemView>
+
+        <com.tedaich.mobile.asr.widget.UserItemView
+            android:id="@+id/feedback_help_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:left_icon="@drawable/ic_feedback_help"
+            app:left_text="@string/user_item_feedback_help_name"
+            app:right_text="ccyzhope@gmail.com"
+            app:show_bottom_line="true"
+            app:show_left_icon="true"
+            app:show_right_arrow="false" >
+
+        </com.tedaich.mobile.asr.widget.UserItemView>
+
+        <com.tedaich.mobile.asr.widget.UserItemView
+            android:id="@+id/about_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:left_icon="@drawable/ic_about"
+            app:left_text="@string/user_item_about_name"
+            app:right_text=""
+            app:show_bottom_line="true"
+            app:show_left_icon="true"
+            app:show_right_arrow="true" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

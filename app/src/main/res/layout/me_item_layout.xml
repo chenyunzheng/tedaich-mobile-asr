@@ -12,7 +12,6 @@
         android:layout_width="@dimen/medium_width"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="@dimen/spacing_normal"
         android:adjustViewBounds="true"
         android:contentDescription="@null"
         android:scaleType="center"
@@ -22,18 +21,26 @@
         android:id="@+id/user_item_name"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_toStartOf="@+id/user_item_more"
         android:layout_toEndOf="@+id/user_item_icon"
-        android:gravity="center_vertical"
+        android:gravity="center|start"
         android:text="@string/default_icon_name"
         android:textColor="@color/colorPrimary"
         android:textSize="20sp" />
 
+    <TextView
+        android:id="@+id/user_item_baseinfo"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toStartOf="@id/user_item_more"
+        android:layout_toEndOf="@id/user_item_name"
+        android:gravity="center|end"
+        android:text="@string/default_icon_info"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp" />
+
     <ImageView
         android:id="@+id/user_item_more"
-        android:layout_width="@dimen/medium_width"
+        android:layout_width="@dimen/small_width"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/spacing_normal"
@@ -43,8 +50,14 @@
         app:srcCompat="@drawable/ic_arrow_right" />
 
     <View
+        android:id="@+id/user_item_bottom_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorPrimary"/>
+        android:layout_alignEnd="@id/user_item_more"
+        android:layout_alignBottom="@id/user_item_icon"
+        android:layout_marginEnd="@dimen/spacing_narrow"
+        android:layout_marginBottom="@dimen/spacing_narrow"
+        android:layout_toEndOf="@id/user_item_icon"
+        android:background="@color/app_gray_background" />
 
 </RelativeLayout>

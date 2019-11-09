@@ -1,15 +1,23 @@
 package com.tedaich.mobile.asr.widget;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.LinearLayout;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.tedaich.mobile.asr.R;
 
-public class UserItemView extends LinearLayout {
+public class UserItemView extends RelativeLayout {
+
+    private Resources resources;
 
     public UserItemView(Context context) {
         super(context);
@@ -28,7 +36,31 @@ public class UserItemView extends LinearLayout {
 
     private void init(Context context, AttributeSet attrs) {
         LayoutInflater.from(context).inflate(R.layout.me_item_layout, this);
+        this.resources = getResources();
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.UserItemView);
+        Drawable itemIcon = typedArray.getDrawable(R.styleable.UserItemView_left_icon);
+        boolean iconShow = typedArray.getBoolean(R.styleable.UserItemView_show_left_icon, false);
+        String leftText = typedArray.getString(R.styleable.UserItemView_left_text);
+        String rightText = typedArray.getString(R.styleable.UserItemView_right_text);
+        boolean rightArrowShow = typedArray.getBoolean(R.styleable.UserItemView_show_right_arrow, false);
+        boolean bottomLineShow = typedArray.getBoolean(R.styleable.UserItemView_show_bottom_line, true);
+        typedArray.recycle();
+
+        ImageView ivItemIcon = findViewById(R.id.user_item_icon);
+        TextView tvItemName = findViewById(R.id.user_item_name);
+        TextView tvItemBaseInfo = findViewById(R.id.user_item_baseinfo);
+        ImageView ivItemMore = findViewById(R.id.user_item_more);
+        View vItemBottomLine = findViewById(R.id.user_item_bottom_line);
+
+        ivItemIcon.setImageDrawable(itemIcon);
+        ivItemIcon.setVisibility(iconShow ? VISIBLE : INVISIBLE);
+        tvItemName.setText(leftText);
+        tvItemBaseInfo.setText(rightText);
+        ivItemMore.setVisibility(rightArrowShow ? VISIBLE : INVISIBLE);
+        vItemBottomLine.setVisibility(bottomLineShow ? VISIBLE : INVISIBLE);
 
     }
+
+
 
 }
