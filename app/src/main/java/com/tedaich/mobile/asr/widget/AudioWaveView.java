@@ -53,7 +53,7 @@ public class AudioWaveView extends View {
 
         centerLinePaint = new Paint();
         centerLinePaint.setStrokeWidth(this.resources.getDimension(R.dimen.audio_wave_center_line_width));
-        centerLinePaint.setColor(this.resources.getColor(R.color.colorAccent));
+        centerLinePaint.setColor(this.resources.getColor(R.color.app_gray_background));
 
         wavePaint = new Paint();
         wavePaint.setStrokeWidth(this.resources.getDimension(R.dimen.audio_wave_wave_width));
@@ -63,7 +63,7 @@ public class AudioWaveView extends View {
 
         ordinaryLinePaint = new Paint();
         ordinaryLinePaint.setStrokeWidth(this.resources.getDimension(R.dimen.audio_wave_ordinary_line_width));
-        ordinaryLinePaint.setColor(this.resources.getColor(R.color.colorPrimaryDark));
+        ordinaryLinePaint.setColor(this.resources.getColor(R.color.app_gray_background));
 
         buf = new ArrayList<>();
         buf.add((short) 1000);

@@ -9,8 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -22,10 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tedaich.mobile.asr.R;
-import com.tedaich.mobile.asr.ui.cloud.adapter.AudioItemAdapter;
-
-import java.util.Arrays;
-import java.util.List;
+import com.tedaich.mobile.asr.ui.cloud.adapter.CloudAudioItemAdapter;
 
 public class CloudFragment extends Fragment {
 
@@ -41,7 +36,7 @@ public class CloudFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         audioRecyclerView.setLayoutManager(layoutManager);
         cloudViewModel.getAudioList().observe(this, audio -> {
-            AudioItemAdapter adapter = new AudioItemAdapter(audio);
+            CloudAudioItemAdapter adapter = new CloudAudioItemAdapter(audio);
             audioRecyclerView.setAdapter(adapter);
         });
         return root;

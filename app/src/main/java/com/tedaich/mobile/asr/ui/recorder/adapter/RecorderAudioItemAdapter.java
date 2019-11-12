@@ -1,4 +1,4 @@
-package com.tedaich.mobile.asr.ui.cloud.adapter;
+package com.tedaich.mobile.asr.ui.recorder.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,15 +7,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import com.tedaich.mobile.asr.R;
 import com.tedaich.mobile.asr.model.Audio;
 
 import java.util.List;
 
-public class AudioItemAdapter extends RecyclerView.Adapter<AudioItemAdapter.AudioItemViewHolder> {
+public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.AudioItemViewHolder> {
 
-    static class AudioItemViewHolder extends RecyclerView.ViewHolder {
+    protected static class AudioItemViewHolder extends RecyclerView.ViewHolder {
         TextView audioName;
         TextView audioDateTime;
         TextView audioDuration;
@@ -29,14 +30,14 @@ public class AudioItemAdapter extends RecyclerView.Adapter<AudioItemAdapter.Audi
 
     private List<Audio> audioList;
 
-    public AudioItemAdapter(List<Audio> audioList){
+    public RecorderAudioItemAdapter(List<Audio> audioList){
         this.audioList = audioList;
     }
 
     @NonNull
     @Override
     public AudioItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cloud_item_layout,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recorder_item_layout,parent,false);
         AudioItemViewHolder viewHolder = new AudioItemViewHolder(view);
         return viewHolder;
     }
