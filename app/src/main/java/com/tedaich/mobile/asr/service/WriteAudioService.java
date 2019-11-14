@@ -1,5 +1,12 @@
 package com.tedaich.mobile.asr.service;
 
+import com.tedaich.mobile.asr.util.AndroidUtils;
+import com.tedaich.mobile.asr.util.AudioUtils;
+
+import java.io.File;
+import java.util.Date;
+import java.util.Vector;
+
 class WriteAudioService implements Runnable {
 
     private RecordAudioTask recordAudioTask;
@@ -10,8 +17,19 @@ class WriteAudioService implements Runnable {
 
     @Override
     public void run() {
-        while (recordAudioTask.getIsRecording().get()){
+        String audioDir = AudioUtils.getAudioDirectory() + File.separatorChar + "语音" + new Date().toString();
+
+        while (!recordAudioTask.getIsDelete().get() && !recordAudioTask.getIsSave().get()){
             //write audio data into file
+            if (recordAudioTask.getIsRecording().get()){
+                Vector<byte[]> audioData = recordAudioTask.getAudioData();
+
+            }
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new Date().toString());
+        System.out.println(AndroidUtils.formatDate(new Date()));
     }
 }

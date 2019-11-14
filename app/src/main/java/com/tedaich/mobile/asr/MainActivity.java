@@ -1,18 +1,18 @@
 package com.tedaich.mobile.asr;
 
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spanned;
-import android.view.Menu;
-import android.view.View;
-import android.widget.Button;
+import android.os.Environment;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.tedaich.mobile.asr.util.AudioUtils;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +30,20 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        AudioUtils.setFilesDir(getAvailableFilesDir());
+
+
+    }
+
+    private File getAvailableFilesDir() {
+        File audioDir = null;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+                || !Environment.isExternalStorageRemovable()) {
+            audioDir = getExternalFilesDir(null);
+        } else {
+            audioDir = getFilesDir();
+        }
+        return audioDir;
     }
 
 }

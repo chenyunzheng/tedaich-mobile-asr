@@ -5,14 +5,29 @@ import android.graphics.drawable.Drawable;
 import android.text.Html;
 import android.text.Spanned;
 import android.widget.Button;
-import android.widget.ImageButton;
 
 import androidx.core.graphics.drawable.DrawableCompat;
 
+import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class AndroidUtils {
+
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     private AndroidUtils() throws Throwable {
         throw new Throwable("Can't be instanced");
+    }
+
+    public static String formatDate(Date date){
+        return sdf.format(date);
+    }
+
+    public static byte[] convertShortToByteArray(short value){
+        ByteBuffer buffer = ByteBuffer.allocate(2);
+        buffer.putShort(value);
+        return buffer.array();
     }
 
     public static void addButtonIcon(Button button, Integer iconDrawable, Integer iconColor, String text){

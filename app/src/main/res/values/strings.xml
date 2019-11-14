@@ -23,4 +23,9 @@
     <string name="user_item_feedback_help_name">帮助与反馈</string>
     <string name="user_item_about_name">关于我们</string>
 
+    <string name="default_audio_directory_name">audio</string>
+
+
+    <string name="error_audiorecord_uninitialized">麦克风不可用</string>
+
 </resources>
