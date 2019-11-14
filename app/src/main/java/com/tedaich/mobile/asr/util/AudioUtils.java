@@ -1,10 +1,14 @@
 package com.tedaich.mobile.asr.util;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 public class AudioUtils {
+
+    private static final String LOG_TAG = "AudioUtils";
 
     private static File filesDir = null;
     private static String audioDirectory = null;
@@ -41,20 +45,38 @@ public class AudioUtils {
         return AudioUtils.audioDirectory;
     }
 
+    private static byte[] getWAVHeader(int sampleRate, int numChannels, int numSamples){
+        return null;
+    }
+
     public static void convertPCMToWAV(String pcmPath, String wavPath) throws Exception {
-        FileInputStream fis = new FileInputStream(pcmPath);
-        FileOutputStream fos = new FileOutputStream(wavPath);
-        byte[] buf = new byte[1024 * 1000];
-        int size = fis.read(buf);
-        int PCMSize = 0;
-        while (size != -1) {
-            PCMSize += size;
-            size = fis.read(buf);
+        int pcmByteSize = 0;
+        try(FileInputStream fis = new FileInputStream(pcmPath)){
+            byte[] buffer = new byte[1024 * 5];
+            int size;
+            while ((size = fis.read(buffer)) != -1){
+                pcmByteSize += size;
+            }
+        } catch (Exception e){
+            Log.e(LOG_TAG, "error in reading pcm audio - " + pcmPath, e);
+            throw e;
         }
-        fis.close();
-
-
-
+        WavHeader header = new WavHeader(16000,1,2,pcmByteSize);
+        try(FileInputStream fis = new FileInputStream(pcmPath);FileOutputStream fos = new FileOutputStream(wavPath)){
+            //write wav header
+            byte[] wavHeader = header.getWavHeader();
+            fos.write(wavHeader, 0, wavHeader.length);
+            fos.flush();
+            byte[] buffer = new byte[1024 * 5];
+            int size;
+            while ((size = fis.read(buffer)) != -1){
+                fos.write(buffer, 0, size);
+            }
+            fos.flush();
+        } catch (Exception e){
+            Log.e(LOG_TAG, "error in writing to wav audio - " + wavPath, e);
+            throw e;
+        }
     }
 
 }

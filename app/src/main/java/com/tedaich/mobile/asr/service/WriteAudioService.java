@@ -8,7 +8,7 @@ import com.tedaich.mobile.asr.util.AudioUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Date;
-import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 class WriteAudioService implements Runnable {
 
@@ -34,8 +34,14 @@ class WriteAudioService implements Runnable {
             while (!recordAudioTask.getIsDelete().get() && !recordAudioTask.getIsSave().get()){
                 //write audio data into file
                 if (recordAudioTask.getIsRecording().get()){
-                    Vector<byte[]> audioData = recordAudioTask.getAudioData();
-                    for (byte[] data : audioData) {
+                    CopyOnWriteArrayList<byte[]> audioData = recordAudioTask.getAudioData();
+                    int size = audioData.size();
+                    byte[][] dataArray = new byte[size][];
+                    while (size-- > 0){
+                        byte[] data = audioData.remove(size);
+                        dataArray[size] = data;
+                    }
+                    for (byte[] data : dataArray){
                         fos.write(data);
                     }
                     fos.flush();
@@ -45,12 +51,6 @@ class WriteAudioService implements Runnable {
         } catch (Exception e) {
             Log.e(LOG_TAG, "error in writing audio data to file", e);
         }
-
-
     }
 
-    public static void main(String[] args) {
-        System.out.println(new Date().toString());
-        System.out.println(AndroidUtils.formatDate(new Date()));
-    }
 }

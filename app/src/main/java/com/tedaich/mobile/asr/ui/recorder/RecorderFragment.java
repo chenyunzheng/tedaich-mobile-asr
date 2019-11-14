@@ -1,6 +1,7 @@
 package com.tedaich.mobile.asr.ui.recorder;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -145,10 +146,12 @@ public class RecorderFragment extends Fragment {
                 if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED){
                     recordAudioTask.execute();
                 } else {
-                    Toast.makeText(this.getContext(), getResources().getString(R.string.error_audiorecord_uninitialized), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this.getContext(), getResources().getString(R.string.error_audiorecord_uninitialized), Toast.LENGTH_LONG).show();
                 }
             } else {
-                recordAudioTask.getIsRecording().set(true);
+                if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED){
+                    recordAudioTask.getIsRecording().set(true);
+                }
             }
         }
         isRecording = !isRecording;
@@ -163,10 +166,34 @@ public class RecorderFragment extends Fragment {
 
 
     private void handleRecordSave(View view) {
-        Toast.makeText(getContext(), "developing", Toast.LENGTH_SHORT).show();
+        recordAudioTask.getIsRecording().set(false);
+        String title = getResources().getString(R.string.app_name);
+        String message = getResources().getString(R.string.default_audio_save_alert_message);
+        new AlertDialog.Builder(this.getContext())
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(R.string.default_dialog_positive_text,(dialog, which) -> {
+                    recordAudioTask.getIsSave().set(true);
+                })
+                .setNegativeButton(R.string.default_dialog_negative_text, (dialog, which) -> {
+                    recordAudioTask.getIsRecording().set(true);
+                })
+                .create().show();
     }
 
     private void handleRecordDelete(View view) {
-        Toast.makeText(getContext(), "developing", Toast.LENGTH_SHORT).show();
+        recordAudioTask.getIsRecording().set(false);
+        String title = getResources().getString(R.string.app_name);
+        String message = getResources().getString(R.string.default_audio_delete_alert_message);
+        new AlertDialog.Builder(this.getContext())
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(R.string.default_dialog_positive_text,(dialog, which) -> {
+                    recordAudioTask.getIsDelete().set(true);
+                })
+                .setNegativeButton(R.string.default_dialog_negative_text, (dialog, which) -> {
+                    recordAudioTask.getIsRecording().set(true);
+                })
+                .create().show();
     }
 }

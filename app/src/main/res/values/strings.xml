@@ -24,6 +24,12 @@
     <string name="user_item_about_name">关于我们</string>
 
     <string name="default_audio_directory_name">audio</string>
+    <string name="default_audio_save_alert_message">是否保存?</string>
+    <string name="default_audio_delete_alert_message">是否删除?</string>
+    <string name="default_dialog_positive_text">确定</string>
+    <string name="default_dialog_negative_text">取消</string>
+
+
 
 
     <string name="error_audiorecord_uninitialized">麦克风不可用</string>

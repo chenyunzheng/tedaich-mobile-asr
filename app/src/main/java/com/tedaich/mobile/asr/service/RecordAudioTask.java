@@ -8,11 +8,12 @@ import android.widget.Toast;
 import com.tedaich.mobile.asr.R;
 import com.tedaich.mobile.asr.util.AndroidUtils;
 
-import java.util.Vector;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class RecordAudioTask extends AsyncTask<Object, Vector, Object> {
+public class RecordAudioTask extends AsyncTask<Object, List, Object> {
 
     private AudioRecord audioRecord;
     private int recBufSize;
@@ -20,7 +21,7 @@ public class RecordAudioTask extends AsyncTask<Object, Vector, Object> {
     private AtomicBoolean isRecording;
     private AtomicBoolean isDelete;
     private AtomicBoolean isSave;
-    private Vector<byte[]> audioData;
+    private CopyOnWriteArrayList<byte[]> audioData;
     private int frameTakeRate;
 
 
@@ -31,7 +32,7 @@ public class RecordAudioTask extends AsyncTask<Object, Vector, Object> {
         this.isRecording = new AtomicBoolean(true);
         this.isDelete = new AtomicBoolean(false);
         this.isSave = new AtomicBoolean(false);
-        this.audioData = new Vector<>();
+        this.audioData = new CopyOnWriteArrayList<>();
         this.frameTakeRate = view.getResources().getInteger(R.integer.audio_frame_take_rate);
     }
 
@@ -47,7 +48,7 @@ public class RecordAudioTask extends AsyncTask<Object, Vector, Object> {
         return isSave;
     }
 
-    public Vector<byte[]> getAudioData() {
+    public CopyOnWriteArrayList<byte[]> getAudioData() {
         return audioData;
     }
 
@@ -61,7 +62,7 @@ public class RecordAudioTask extends AsyncTask<Object, Vector, Object> {
     @Override
     protected Object doInBackground(Object... objects) {
         short[] buffer = new short[recBufSize];
-        Vector<Short> audioWaveValues = new Vector<>();
+        CopyOnWriteArrayList<Short> audioWaveValues = new CopyOnWriteArrayList<>();
         while (!isDelete.get() && !isSave.get()){
             if (isRecording.get()){
                 audioRecord.startRecording();
@@ -95,10 +96,15 @@ public class RecordAudioTask extends AsyncTask<Object, Vector, Object> {
     }
 
     @Override
-    protected void onProgressUpdate(Vector... values) {
+    protected void onProgressUpdate(List... values) {
         if (values != null && values.length > 0){
-            Vector audioWaveValues = values[0];
-            Vector drawValues = (Vector)audioWaveValues.clone();
+            CopyOnWriteArrayList audioWaveValues = (CopyOnWriteArrayList)values[0];
+            try {
+                //UI work
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             audioWaveValues.clear();
 //            drawAudioWave(drawValues);
         }
