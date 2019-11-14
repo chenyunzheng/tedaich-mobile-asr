@@ -1,6 +1,8 @@
 package com.tedaich.mobile.asr.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 public class AudioUtils {
 
@@ -31,7 +33,28 @@ public class AudioUtils {
         }
     }
 
+    /**
+     * get audio directory
+     * @return
+     */
     public static String getAudioDirectory(){
         return AudioUtils.audioDirectory;
     }
+
+    public static void convertPCMToWAV(String pcmPath, String wavPath) throws Exception {
+        FileInputStream fis = new FileInputStream(pcmPath);
+        FileOutputStream fos = new FileOutputStream(wavPath);
+        byte[] buf = new byte[1024 * 1000];
+        int size = fis.read(buf);
+        int PCMSize = 0;
+        while (size != -1) {
+            PCMSize += size;
+            size = fis.read(buf);
+        }
+        fis.close();
+
+
+
+    }
+
 }
