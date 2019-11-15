@@ -46,7 +46,7 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
     public void onBindViewHolder(@NonNull AudioItemViewHolder holder, int position) {
         Audio audio = audioList.get(position);
         holder.audioName.setText(audio.getName());
-        holder.audioDateTime.setText(audio.getDateTime().toString());
+        holder.audioDateTime.setText(audio.getCreateTime().toString());
         holder.audioDuration.setText(audio.getDuration());
     }
 

@@ -23,7 +23,7 @@ public class RecorderViewModel extends ViewModel {
         List<Audio> audioList = new ArrayList<>();
         Audio audio = new Audio();
         audio.setName("demo");
-        audio.setDateTime(new Date());
+        audio.setCreateTime(new Date());
         audio.setDuration("00:39");
         audioList.add(audio);
         mAudioList.setValue(audioList);

@@ -34,4 +34,6 @@
 
     <string name="error_audiorecord_uninitialized">麦克风不可用</string>
 
+    <string name="default_db_name">tedaich_asr</string>
+
 </resources>

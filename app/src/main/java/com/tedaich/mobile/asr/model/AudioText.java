@@ -1,52 +1,67 @@
 package com.tedaich.mobile.asr.model;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.NotNull;
+
 import java.util.Date;
 
+@Entity(nameInDb = "audio_text")
 public class AudioText {
 
-    private int id;
-    private int audioId;
+    @Id(autoincrement = true)
+    private Long id;
+    private Long audioId;
     private int type;
+    @NotNull
     private String text;
+    @NotNull
     private Date createTime;
 
-    public int getId() {
-        return id;
+    @Generated(hash = 1602339964)
+    public AudioText(Long id, Long audioId, int type, @NotNull String text,
+            @NotNull Date createTime) {
+        this.id = id;
+        this.audioId = audioId;
+        this.type = type;
+        this.text = text;
+        this.createTime = createTime;
     }
-
-    public void setId(int id) {
+    @Generated(hash = 328810189)
+    public AudioText() {
+    }
+    public Long getId() {
+        return this.id;
+    }
+    public void setId(Long id) {
         this.id = id;
     }
-
-    public int getAudioId() {
-        return audioId;
+    public Long getAudioId() {
+        return this.audioId;
     }
-
-    public void setAudioId(int audioId) {
+    public void setAudioId(Long audioId) {
         this.audioId = audioId;
     }
-
     public int getType() {
-        return type;
+        return this.type;
     }
-
     public void setType(int type) {
         this.type = type;
     }
-
     public String getText() {
-        return text;
+        return this.text;
     }
-
     public void setText(String text) {
         this.text = text;
     }
-
     public Date getCreateTime() {
-        return createTime;
+        return this.createTime;
     }
-
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
+
+
 }

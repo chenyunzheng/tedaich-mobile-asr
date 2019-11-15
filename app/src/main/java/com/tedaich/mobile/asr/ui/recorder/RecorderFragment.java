@@ -102,8 +102,7 @@ public class RecorderFragment extends Fragment {
         audioWaveLinearLayout.setVisibility(View.INVISIBLE);
 
         fixedListRecyclerView.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
-        fixedListRecyclerView.setLayoutManager(layoutManager);
+        fixedListRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         cloudViewModel.getAudioList().observe(this, new Observer<List<Audio>>() {
             @Override
             public void onChanged(List<Audio> audioList) {
