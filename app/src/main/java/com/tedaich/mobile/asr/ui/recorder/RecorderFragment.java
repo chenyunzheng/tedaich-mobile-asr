@@ -174,11 +174,15 @@ public class RecorderFragment extends Fragment {
                 .setMessage(message)
                 .setPositiveButton(R.string.default_dialog_positive_text,(dialog, which) -> {
                     recordAudioTask.getIsSave().set(true);
+                    audioWaveLinearLayout.setVisibility(View.INVISIBLE);
+                    iBtnDelete.setVisibility(View.INVISIBLE);
+                    iBtnSave.setVisibility(View.INVISIBLE);
+                    //save audio metadata and update list
+
                 })
                 .setNegativeButton(R.string.default_dialog_negative_text, (dialog, which) -> {
                     recordAudioTask.getIsRecording().set(true);
-                })
-                .create().show();
+                }).create().show();
     }
 
     private void handleRecordDelete(View view) {
@@ -190,10 +194,13 @@ public class RecorderFragment extends Fragment {
                 .setMessage(message)
                 .setPositiveButton(R.string.default_dialog_positive_text,(dialog, which) -> {
                     recordAudioTask.getIsDelete().set(true);
+                    audioWaveLinearLayout.setVisibility(View.INVISIBLE);
+                    iBtnDelete.setVisibility(View.INVISIBLE);
+                    iBtnSave.setVisibility(View.INVISIBLE);
+                    //delete audio file
                 })
                 .setNegativeButton(R.string.default_dialog_negative_text, (dialog, which) -> {
                     recordAudioTask.getIsRecording().set(true);
-                })
-                .create().show();
+                }).create().show();
     }
 }
