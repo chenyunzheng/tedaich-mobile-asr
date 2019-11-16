@@ -47,7 +47,7 @@ class WriteAudioService implements Runnable {
                     fos.flush();
                 }
             }
-            AudioUtils.convertPCMToWAV(pcmAudioPath, wavAudioPath);
+            AudioUtils.convertPCMToWAV(pcmAudioPath, wavAudioPath, true);
         } catch (Exception e) {
             Log.e(LOG_TAG, "error in writing audio data to file", e);
         }

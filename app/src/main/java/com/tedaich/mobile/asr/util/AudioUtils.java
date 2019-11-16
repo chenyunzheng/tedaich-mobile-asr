@@ -49,7 +49,7 @@ public class AudioUtils {
         return null;
     }
 
-    public static void convertPCMToWAV(String pcmPath, String wavPath) throws Exception {
+    public static void convertPCMToWAV(String pcmPath, String wavPath, boolean deletePcm) throws Exception {
         int pcmByteSize = 0;
         try(FileInputStream fis = new FileInputStream(pcmPath)){
             byte[] buffer = new byte[1024 * 5];
@@ -76,6 +76,10 @@ public class AudioUtils {
         } catch (Exception e){
             Log.e(LOG_TAG, "error in writing to wav audio - " + wavPath, e);
             throw e;
+        }
+        File pcmFile = new File(pcmPath);
+        if (deletePcm){
+            pcmFile.delete();
         }
     }
 

@@ -11,7 +11,6 @@ import com.tedaich.mobile.asr.util.AndroidUtils;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class RecordAudioTask extends AsyncTask<Object, List, Object> {
 
@@ -21,6 +20,7 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
     private AtomicBoolean isRecording;
     private AtomicBoolean isDelete;
     private AtomicBoolean isSave;
+//    private String
     private CopyOnWriteArrayList<byte[]> audioData;
     private int frameTakeRate;
 
@@ -32,6 +32,7 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
         this.isRecording = new AtomicBoolean(true);
         this.isDelete = new AtomicBoolean(false);
         this.isSave = new AtomicBoolean(false);
+
         this.audioData = new CopyOnWriteArrayList<>();
         this.frameTakeRate = view.getResources().getInteger(R.integer.audio_frame_take_rate);
     }
@@ -63,9 +64,11 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
     protected Object doInBackground(Object... objects) {
         short[] buffer = new short[recBufSize];
         CopyOnWriteArrayList<Short> audioWaveValues = new CopyOnWriteArrayList<>();
+        long duration = 0L, startRecordTime = 0L, stopRecordTime = 0L;
         while (!isDelete.get() && !isSave.get()){
             if (isRecording.get()){
                 audioRecord.startRecording();
+                startRecordTime = System.currentTimeMillis();
                 System.out.println("start recording...");
                 while (audioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING){
                     int readSize = audioRecord.read(buffer, 0, recBufSize);
@@ -88,10 +91,14 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
             } else {
                 if (audioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING){
                     audioRecord.stop();
+                    stopRecordTime = System.currentTimeMillis();
+                    duration += (stopRecordTime - startRecordTime);
                 }
             }
         }
-
+        if (audioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING){
+            audioRecord.stop();
+        }
         return null;
     }
 
@@ -99,12 +106,8 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
     protected void onProgressUpdate(List... values) {
         if (values != null && values.length > 0){
             CopyOnWriteArrayList audioWaveValues = (CopyOnWriteArrayList)values[0];
-            try {
-                //UI work
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            //UI work
+
             audioWaveValues.clear();
 //            drawAudioWave(drawValues);
         }
@@ -123,19 +126,7 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
 //        super.onCancelled(o);
     }
 
-    static volatile AtomicInteger num = new AtomicInteger(0);
-
-    static void  printNum(){
-        System.out.println(num.incrementAndGet());
-    }
-
     public static void main(String[] args) {
-
-        for (int i=0; i<10000; i++){
-            new Thread(() -> {
-                printNum();
-            }).start();
-        }
 
         short a = 123;
         byte[] bytes = AndroidUtils.convertShortToByteArray(a);

@@ -23,7 +23,9 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tedaich.mobile.asr.App;
 import com.tedaich.mobile.asr.R;
+import com.tedaich.mobile.asr.dao.DaoSession;
 import com.tedaich.mobile.asr.model.Audio;
 import com.tedaich.mobile.asr.service.RecordAudioTask;
 import com.tedaich.mobile.asr.ui.cloud.CloudViewModel;
@@ -60,12 +62,14 @@ public class RecorderFragment extends Fragment {
     private int recBufSize;
     private AudioRecord audioRecord;
     private RecordAudioTask recordAudioTask;
-    private String mFileName = "test";//文件名
+
+    private DaoSession daoSession;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         fragmentActivity = (FragmentActivity) context;
+        daoSession = ((App) fragmentActivity.getApplication()).getDaoSession();
     }
 
     @Override
@@ -88,7 +92,6 @@ public class RecorderFragment extends Fragment {
         fixedListRecyclerView = root.findViewById(R.id.fixedlist_recycler_view);
 
         prepareForAudioRecord();
-
         return root;
     }
 
@@ -103,6 +106,7 @@ public class RecorderFragment extends Fragment {
 
         fixedListRecyclerView.setHasFixedSize(true);
         fixedListRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        recorderViewModel.setDaoSession(daoSession);
         cloudViewModel.getAudioList().observe(this, new Observer<List<Audio>>() {
             @Override
             public void onChanged(List<Audio> audioList) {
@@ -127,10 +131,6 @@ public class RecorderFragment extends Fragment {
         if (isRecording){
             imageButton.setImageDrawable(getResources().getDrawable(R.drawable.btn_circle_record));
             //pause audio record
-//            if (recordAudioTask != null){
-//                recordAudioTask.cancel(true);
-//                System.out.println("=======canceled");
-//            }
             recordAudioTask.getIsRecording().set(false);
 
         } else {
@@ -162,8 +162,6 @@ public class RecorderFragment extends Fragment {
         RecorderFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-
-
     private void handleRecordSave(View view) {
         recordAudioTask.getIsRecording().set(false);
         String title = getResources().getString(R.string.app_name);
@@ -177,7 +175,7 @@ public class RecorderFragment extends Fragment {
                     iBtnDelete.setVisibility(View.INVISIBLE);
                     iBtnSave.setVisibility(View.INVISIBLE);
                     //save audio metadata and update list
-
+                    recorderViewModel.saveAudioMetadata();
                 })
                 .setNegativeButton(R.string.default_dialog_negative_text, (dialog, which) -> {
                     recordAudioTask.getIsRecording().set(true);

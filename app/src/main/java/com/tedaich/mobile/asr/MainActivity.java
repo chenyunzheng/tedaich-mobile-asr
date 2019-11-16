@@ -1,5 +1,6 @@
 package com.tedaich.mobile.asr;
 
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.os.Environment;
 
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         AudioUtils.setFilesDir(getAvailableFilesDir());
 
-
+        MediaMetadataRetriever metadataRetriever = new MediaMetadataRetriever();
 
     }
 
