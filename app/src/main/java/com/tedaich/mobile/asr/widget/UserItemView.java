@@ -60,7 +60,4 @@ public class UserItemView extends RelativeLayout {
         vItemBottomLine.setVisibility(bottomLineShow ? VISIBLE : INVISIBLE);
 
     }
-
-
-
 }

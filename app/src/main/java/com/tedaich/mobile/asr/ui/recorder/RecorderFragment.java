@@ -30,9 +30,12 @@ import com.tedaich.mobile.asr.model.Audio;
 import com.tedaich.mobile.asr.service.RecordAudioTask;
 import com.tedaich.mobile.asr.ui.cloud.CloudViewModel;
 import com.tedaich.mobile.asr.ui.recorder.adapter.RecorderAudioItemAdapter;
+import com.tedaich.mobile.asr.util.AndroidUtils;
 import com.tedaich.mobile.asr.util.AudioUtils;
 import com.tedaich.mobile.asr.widget.AudioWaveView;
 
+import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
@@ -141,7 +144,10 @@ public class RecorderFragment extends Fragment {
             audioWaveLinearLayout.setVisibility(View.VISIBLE);
             //start/resume audio record
             if (recordAudioTask == null){
-                recordAudioTask = new RecordAudioTask(audioRecord, recBufSize, view);
+                String defaultAudioName = "语音_" + AndroidUtils.formatDate(new Date());
+                String audioPath = AudioUtils.getAudioDirectory() + File.separatorChar + defaultAudioName;
+                DaoSession daoSession = this.daoSession;
+                recordAudioTask = new RecordAudioTask(audioRecord, recBufSize, view, audioPath, daoSession);
                 if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED){
                     recordAudioTask.execute();
                 } else {

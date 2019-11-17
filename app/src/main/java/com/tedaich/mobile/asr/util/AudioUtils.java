@@ -77,8 +77,8 @@ public class AudioUtils {
             Log.e(LOG_TAG, "error in writing to wav audio - " + wavPath, e);
             throw e;
         }
-        File pcmFile = new File(pcmPath);
         if (deletePcm){
+            File pcmFile = new File(pcmPath);
             pcmFile.delete();
         }
     }

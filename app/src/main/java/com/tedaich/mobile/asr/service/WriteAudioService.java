@@ -2,12 +2,10 @@ package com.tedaich.mobile.asr.service;
 
 import android.util.Log;
 
-import com.tedaich.mobile.asr.util.AndroidUtils;
 import com.tedaich.mobile.asr.util.AudioUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Date;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 class WriteAudioService implements Runnable {
@@ -22,8 +20,7 @@ class WriteAudioService implements Runnable {
 
     @Override
     public void run() {
-        String defaultAudioName = "语音_" + AndroidUtils.formatDate(new Date());
-        String audioPath = AudioUtils.getAudioDirectory() + File.separatorChar + defaultAudioName;
+        String audioPath = recordAudioTask.getAudioPath();
         String pcmAudioPath = audioPath + ".pcm";
         String wavAudioPath = audioPath + ".wav";
         File pcmAudioFile = new File(pcmAudioPath);
@@ -47,9 +44,20 @@ class WriteAudioService implements Runnable {
                     fos.flush();
                 }
             }
-            AudioUtils.convertPCMToWAV(pcmAudioPath, wavAudioPath, true);
         } catch (Exception e) {
-            Log.e(LOG_TAG, "error in writing audio data to file", e);
+            Log.e(LOG_TAG, "error in writing audio data to pcm file", e);
+        }
+        if (recordAudioTask.getIsDelete().get()){
+            if (pcmAudioFile.exists()){
+                pcmAudioFile.delete();
+            }
+        }
+        if (recordAudioTask.getIsSave().get()){
+            try {
+                AudioUtils.convertPCMToWAV(pcmAudioPath, wavAudioPath, false);
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "error in converting pcm to wav file", e);
+            }
         }
     }
 

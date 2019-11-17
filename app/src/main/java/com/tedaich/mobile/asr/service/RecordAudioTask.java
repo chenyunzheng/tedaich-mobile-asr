@@ -6,6 +6,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.tedaich.mobile.asr.R;
+import com.tedaich.mobile.asr.dao.AudioDao;
+import com.tedaich.mobile.asr.dao.DaoSession;
+import com.tedaich.mobile.asr.model.Audio;
 import com.tedaich.mobile.asr.util.AndroidUtils;
 
 import java.util.List;
@@ -17,6 +20,8 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
     private AudioRecord audioRecord;
     private int recBufSize;
     private View view;
+    private String audioPath;
+    private DaoSession daoSession;
     private AtomicBoolean isRecording;
     private AtomicBoolean isDelete;
     private AtomicBoolean isSave;
@@ -25,16 +30,22 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
     private int frameTakeRate;
 
 
-    public RecordAudioTask(AudioRecord audioRecord, int recBufSize, View view){
+    public RecordAudioTask(AudioRecord audioRecord, int recBufSize,
+                           View view, String audioPath, DaoSession daoSession){
         this.audioRecord = audioRecord;
         this.recBufSize = recBufSize;
         this.view = view;
+        this.audioPath = audioPath;
+        this.daoSession = daoSession;
         this.isRecording = new AtomicBoolean(true);
         this.isDelete = new AtomicBoolean(false);
         this.isSave = new AtomicBoolean(false);
-
         this.audioData = new CopyOnWriteArrayList<>();
         this.frameTakeRate = view.getResources().getInteger(R.integer.audio_frame_take_rate);
+    }
+
+    public String getAudioPath() {
+        return audioPath;
     }
 
     public AtomicBoolean getIsRecording() {
@@ -70,7 +81,7 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
                 audioRecord.startRecording();
                 startRecordTime = System.currentTimeMillis();
                 System.out.println("start recording...");
-                while (audioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING){
+                while (isRecording.get() && audioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING){
                     int readSize = audioRecord.read(buffer, 0, recBufSize);
                     if (audioWaveValues.isEmpty()){
                         for (int i = 0; i < readSize; i += frameTakeRate) {
@@ -93,11 +104,19 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
                     audioRecord.stop();
                     stopRecordTime = System.currentTimeMillis();
                     duration += (stopRecordTime - startRecordTime);
+                    System.out.println("================" + duration);
                 }
             }
         }
         if (audioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING){
             audioRecord.stop();
+        }
+        if (isSave.get()) {
+            //add audio metadata into db
+            Audio audio = new Audio();
+            AudioDao audioDao = daoSession.getAudioDao();
+            long _id = audioDao.insert(audio);
+            
         }
         return null;
     }
@@ -118,12 +137,19 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
     @Override
     protected void onPostExecute(Object o) {
         super.onPostExecute(o);
+        view = null;
+        if (audioRecord != null){
+            audioRecord.release();
+        }
     }
 
     @Override
     protected void onCancelled(Object o) {
         //set view = null; to avoid leak
-//        super.onCancelled(o);
+        view = null;
+        if (audioRecord != null){
+            audioRecord.release();
+        }
     }
 
     public static void main(String[] args) {
