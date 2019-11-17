@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.tedaich.mobile.asr.R;
+import com.tedaich.mobile.asr.activity.UserLoginActivity;
 import com.tedaich.mobile.asr.widget.CircleImageView;
 
 public class MyFragment extends Fragment {
@@ -36,8 +37,10 @@ public class MyFragment extends Fragment {
         CircleImageView userImage = root.findViewById(R.id.user_front_image);
         TextView userAction = root.findViewById(R.id.user_action);
 
+
         userImage.setOnClickListener(this::handleUserImageChange);
         userAction.setOnClickListener(this::handleUserActionClick);
+
         return root;
     }
 
@@ -53,7 +56,9 @@ public class MyFragment extends Fragment {
     }
 
     private void handleUserActionClick(View view) {
-        Intent intent = new Intent();
-
+        Intent intent = new Intent(view.getContext(), UserLoginActivity.class);
+        intent.putExtra("phone", "xxx-xxxx-xxxx");
+        intent.putExtra("passCode", "123456");
+        startActivityForResult(intent, 100);
     }
 }

@@ -36,4 +36,6 @@
 
     <string name="default_db_name">tedaich_asr</string>
 
+    <string name="label_user_login_activity">用户登录/注册</string>
+
 </resources>

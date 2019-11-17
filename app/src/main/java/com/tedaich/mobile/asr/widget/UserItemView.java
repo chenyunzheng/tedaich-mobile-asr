@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -58,6 +59,16 @@ public class UserItemView extends RelativeLayout {
         tvItemBaseInfo.setText(rightText);
         ivItemMore.setVisibility(rightArrowShow ? VISIBLE : INVISIBLE);
         vItemBottomLine.setVisibility(bottomLineShow ? VISIBLE : INVISIBLE);
+
+        tvItemName.setOnClickListener(view -> {
+            String itemName = ((TextView)view).getText().toString();
+            if (!itemName.equals(this.resources.getString(R.string.user_item_feedback_help_name))){
+                Toast.makeText(this.getContext(), itemName, Toast.LENGTH_SHORT).show();
+            }
+        });
+        ivItemMore.setOnClickListener(view -> {
+            Toast.makeText(this.getContext(), "in developing", Toast.LENGTH_SHORT).show();
+        });
 
     }
 }
