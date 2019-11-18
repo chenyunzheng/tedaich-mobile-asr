@@ -11,6 +11,8 @@ import com.tedaich.mobile.asr.dao.DaoSession;
 import com.tedaich.mobile.asr.model.Audio;
 import com.tedaich.mobile.asr.util.AndroidUtils;
 
+import java.lang.ref.WeakReference;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -19,7 +21,7 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
 
     private AudioRecord audioRecord;
     private int recBufSize;
-    private View view;
+    private WeakReference<View> view;
     private String audioPath;
     private DaoSession daoSession;
     private AtomicBoolean isRecording;
@@ -34,7 +36,7 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
                            View view, String audioPath, DaoSession daoSession){
         this.audioRecord = audioRecord;
         this.recBufSize = recBufSize;
-        this.view = view;
+        this.view = new WeakReference<>(view);
         this.audioPath = audioPath;
         this.daoSession = daoSession;
         this.isRecording = new AtomicBoolean(true);
@@ -66,7 +68,7 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
 
     @Override
     protected void onPreExecute() {
-        Toast.makeText(view.getContext(), "Start Recording", Toast.LENGTH_SHORT).show();
+        Toast.makeText(view.get().getContext(), "Start Recording", Toast.LENGTH_SHORT).show();
         super.onPreExecute();
         new Thread(new WriteAudioService(this)).start();//开线程写文件
     }
@@ -123,15 +125,23 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
 
     @Override
     protected void onProgressUpdate(List... values) {
+        super.onProgressUpdate(values);
         if (values != null && values.length > 0){
-            CopyOnWriteArrayList audioWaveValues = (CopyOnWriteArrayList)values[0];
-            //UI work
 
-            audioWaveValues.clear();
+            Date now = new Date();
+//            if (now - lastUpdateWaveTime >= updateWaveInterval){
+//                CopyOnWriteArrayList audioWaveValues = (CopyOnWriteArrayList)values[0];
+//                //wave view update
+//
+//                //recorder time update
+//
+//                audioWaveValues.clear();
+//            }
+
+
+
 //            drawAudioWave(drawValues);
         }
-
-        super.onProgressUpdate(values);
     }
 
     @Override

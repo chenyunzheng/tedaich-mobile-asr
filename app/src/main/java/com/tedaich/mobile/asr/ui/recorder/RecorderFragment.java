@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,7 @@ import com.tedaich.mobile.asr.R;
 import com.tedaich.mobile.asr.dao.DaoSession;
 import com.tedaich.mobile.asr.model.Audio;
 import com.tedaich.mobile.asr.service.RecordAudioTask;
+import com.tedaich.mobile.asr.service.TimerAudioService;
 import com.tedaich.mobile.asr.ui.cloud.CloudViewModel;
 import com.tedaich.mobile.asr.ui.recorder.adapter.RecorderAudioItemAdapter;
 import com.tedaich.mobile.asr.util.AndroidUtils;
@@ -56,6 +58,7 @@ public class RecorderFragment extends Fragment {
     private ImageButton iBtnRecorder;
     private ImageButton iBtnDelete;
     private ImageButton iBtnSave;
+    private TextView recorderTimer;
     private AudioWaveView audioWaveView;
     private LinearLayout audioWaveLinearLayout;
     private RecyclerView fixedListRecyclerView;
@@ -65,6 +68,7 @@ public class RecorderFragment extends Fragment {
     private int recBufSize;
     private AudioRecord audioRecord;
     private RecordAudioTask recordAudioTask;
+    private TimerAudioService timerAudioService;
 
     private DaoSession daoSession;
 
@@ -90,6 +94,7 @@ public class RecorderFragment extends Fragment {
         iBtnRecorder = root.findViewById(R.id.btn_recorder);
         iBtnDelete = root.findViewById(R.id.btn_delete);
         iBtnSave = root.findViewById(R.id.btn_save);
+        recorderTimer = root.findViewById(R.id.recorder_timer);
         audioWaveView = root.findViewById(R.id.audio_wave_view);
         audioWaveLinearLayout = root.findViewById(R.id.AudioWave_LinearLayout);
         fixedListRecyclerView = root.findViewById(R.id.fixedlist_recycler_view);
@@ -150,6 +155,8 @@ public class RecorderFragment extends Fragment {
                 recordAudioTask = new RecordAudioTask(audioRecord, recBufSize, view, audioPath, daoSession);
                 if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED){
                     recordAudioTask.execute();
+                    timerAudioService = new TimerAudioService(recorderTimer, recordAudioTask);
+                    timerAudioService.start();
                 } else {
                     Toast.makeText(this.getContext(), getResources().getString(R.string.error_audiorecord_uninitialized), Toast.LENGTH_LONG).show();
                 }
@@ -177,6 +184,7 @@ public class RecorderFragment extends Fragment {
                 .setMessage(message)
                 .setPositiveButton(R.string.default_dialog_positive_text,(dialog, which) -> {
                     recordAudioTask.getIsSave().set(true);
+                    timerAudioService.stop();
                     audioWaveLinearLayout.setVisibility(View.INVISIBLE);
                     iBtnDelete.setVisibility(View.INVISIBLE);
                     iBtnSave.setVisibility(View.INVISIBLE);
@@ -197,6 +205,7 @@ public class RecorderFragment extends Fragment {
                 .setMessage(message)
                 .setPositiveButton(R.string.default_dialog_positive_text,(dialog, which) -> {
                     recordAudioTask.getIsDelete().set(true);
+                    timerAudioService.stop();
                     audioWaveLinearLayout.setVisibility(View.INVISIBLE);
                     iBtnDelete.setVisibility(View.INVISIBLE);
                     iBtnSave.setVisibility(View.INVISIBLE);

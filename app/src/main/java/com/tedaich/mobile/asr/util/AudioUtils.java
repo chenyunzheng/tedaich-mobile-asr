@@ -5,6 +5,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Locale;
 
 public class AudioUtils {
 
@@ -45,10 +46,13 @@ public class AudioUtils {
         return AudioUtils.audioDirectory;
     }
 
-    private static byte[] getWAVHeader(int sampleRate, int numChannels, int numSamples){
-        return null;
-    }
-
+    /**
+     * convert pcm audio to wav format
+     * @param pcmPath
+     * @param wavPath
+     * @param deletePcm
+     * @throws Exception
+     */
     public static void convertPCMToWAV(String pcmPath, String wavPath, boolean deletePcm) throws Exception {
         int pcmByteSize = 0;
         try(FileInputStream fis = new FileInputStream(pcmPath)){
@@ -81,6 +85,19 @@ public class AudioUtils {
             File pcmFile = new File(pcmPath);
             pcmFile.delete();
         }
+    }
+
+    /**
+     * get recorder timer show text
+     * @param milliSec
+     * @return
+     */
+    public static String getTimerValue(long milliSec) {
+        int totalSec = (int)(milliSec/1000);
+        int sec = totalSec%60;
+        int min = totalSec/60%60;
+        int hour = totalSec/60/60%60;
+        return String.format(Locale.getDefault(),"%02d:%02d:%02d", hour, min, sec);
     }
 
 }
