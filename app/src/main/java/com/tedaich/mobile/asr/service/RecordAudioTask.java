@@ -6,9 +6,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.tedaich.mobile.asr.R;
-import com.tedaich.mobile.asr.dao.AudioDao;
 import com.tedaich.mobile.asr.dao.DaoSession;
-import com.tedaich.mobile.asr.model.Audio;
 import com.tedaich.mobile.asr.util.AndroidUtils;
 
 import java.lang.ref.WeakReference;
@@ -115,9 +113,10 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
         }
         if (isSave.get()) {
             //add audio metadata into db
-            Audio audio = new Audio();
-            AudioDao audioDao = daoSession.getAudioDao();
-            long _id = audioDao.insert(audio);
+            //view.get().getContext().getSharedPreferences()
+//            Audio audio = new Audio();
+//            AudioDao audioDao = daoSession.getAudioDao();
+//            long _id = audioDao.insert(audio);
             
         }
         return null;

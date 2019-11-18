@@ -11,12 +11,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.tedaich.mobile.asr.R;
 import com.tedaich.mobile.asr.activity.UserLoginActivity;
+import com.tedaich.mobile.asr.util.Constants;
 import com.tedaich.mobile.asr.widget.CircleImageView;
 
 public class MyFragment extends Fragment {
@@ -24,11 +26,13 @@ public class MyFragment extends Fragment {
     private FragmentActivity fragmentActivity;
 
     private MyViewModel myViewModel;
+    private SharedPreferences sharedPreferences;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         fragmentActivity = getActivity();
+        sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,8 +41,7 @@ public class MyFragment extends Fragment {
         CircleImageView userImage = root.findViewById(R.id.user_front_image);
         TextView userAction = root.findViewById(R.id.user_action);
 
-
-        userImage.setOnClickListener(this::handleUserImageChange);
+        userImage.setOnClickListener(this::handleAvatarChange);
         userAction.setOnClickListener(this::handleUserActionClick);
 
         return root;
@@ -47,18 +50,40 @@ public class MyFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        SharedPreferences spf = fragmentActivity.getSharedPreferences("info", Context.MODE_PRIVATE);
-        spf.edit().putString("", null);
+        if (sharedPreferences.getLong("G_USER_ID", -1) != -1){
+            //update ui
+
+        }
     }
 
-    private void handleUserImageChange(View view){
-        Toast.makeText(fragmentActivity, "in developing", Toast.LENGTH_SHORT).show();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Constants.RESULT_OK){
+            if (requestCode == Constants.REQUEST_CODE_USER_LOGIN && data != null){
+                //update current user info into shared preference
+                SharedPreferences.Editor spEditor = sharedPreferences.edit();
+                spEditor.putLong("G_USER_ID", data.getLongExtra("G_USER_ID", -1));
+                spEditor.apply();
+                //check or update user table by g_user_id
+
+            }
+        }
+    }
+
+    private void handleAvatarChange(View view){
+        //login or not
+        if (sharedPreferences.getLong("G_USER_ID", -1) == -1){
+            Toast.makeText(fragmentActivity, "Login first", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(fragmentActivity, "in developing", Toast.LENGTH_SHORT).show();
+            //update user table and shared preference for avatar path
+
+        }
     }
 
     private void handleUserActionClick(View view) {
         Intent intent = new Intent(view.getContext(), UserLoginActivity.class);
-        intent.putExtra("phone", "xxx-xxxx-xxxx");
-        intent.putExtra("passCode", "123456");
-        startActivityForResult(intent, 100);
+        startActivityForResult(intent, Constants.REQUEST_CODE_USER_LOGIN);
     }
 }

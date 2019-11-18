@@ -26,6 +26,8 @@ public class User {
     private String phone;
     @Unique
     private String email;
+    private String avatar;
+    private Long gUserId;
     @ToMany(referencedJoinProperty = "userId")
     private List<Audio> audioList;
 
@@ -35,14 +37,16 @@ public class User {
     /** Used for active entity operations. */
     @Generated(hash = 1507654846)
     private transient UserDao myDao;
-    @Generated(hash = 39260710)
+    @Generated(hash = 1237889235)
     public User(Long id, @NotNull String name, int gender, String phone,
-            String email) {
+            String email, String avatar, Long gUserId) {
         this.id = id;
         this.name = name;
         this.gender = gender;
         this.phone = phone;
         this.email = email;
+        this.avatar = avatar;
+        this.gUserId = gUserId;
     }
     @Generated(hash = 586692638)
     public User() {
@@ -76,6 +80,18 @@ public class User {
     }
     public void setEmail(String email) {
         this.email = email;
+    }
+    public String getAvatar() {
+        return this.avatar;
+    }
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+    public Long getGUserId() {
+        return this.gUserId;
+    }
+    public void setGUserId(Long gUserId) {
+        this.gUserId = gUserId;
     }
     /**
      * To-many relationship, resolved on first access (and after reset).
@@ -143,6 +159,4 @@ public class User {
         myDao = daoSession != null ? daoSession.getUserDao() : null;
     }
 
-
-    
 }

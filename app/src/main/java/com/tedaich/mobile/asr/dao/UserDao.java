@@ -29,6 +29,8 @@ public class UserDao extends AbstractDao<User, Long> {
         public final static Property Gender = new Property(2, int.class, "gender", false, "GENDER");
         public final static Property Phone = new Property(3, String.class, "phone", false, "PHONE");
         public final static Property Email = new Property(4, String.class, "email", false, "EMAIL");
+        public final static Property Avatar = new Property(5, String.class, "avatar", false, "AVATAR");
+        public final static Property GUserId = new Property(6, Long.class, "gUserId", false, "G_USER_ID");
     }
 
     private DaoSession daoSession;
@@ -51,7 +53,9 @@ public class UserDao extends AbstractDao<User, Long> {
                 "\"NAME\" TEXT NOT NULL ," + // 1: name
                 "\"GENDER\" INTEGER NOT NULL ," + // 2: gender
                 "\"PHONE\" TEXT UNIQUE ," + // 3: phone
-                "\"EMAIL\" TEXT UNIQUE );"); // 4: email
+                "\"EMAIL\" TEXT UNIQUE ," + // 4: email
+                "\"AVATAR\" TEXT," + // 5: avatar
+                "\"G_USER_ID\" INTEGER);"); // 6: gUserId
     }
 
     /** Drops the underlying database table. */
@@ -80,6 +84,16 @@ public class UserDao extends AbstractDao<User, Long> {
         if (email != null) {
             stmt.bindString(5, email);
         }
+ 
+        String avatar = entity.getAvatar();
+        if (avatar != null) {
+            stmt.bindString(6, avatar);
+        }
+ 
+        Long gUserId = entity.getGUserId();
+        if (gUserId != null) {
+            stmt.bindLong(7, gUserId);
+        }
     }
 
     @Override
@@ -102,6 +116,16 @@ public class UserDao extends AbstractDao<User, Long> {
         if (email != null) {
             stmt.bindString(5, email);
         }
+ 
+        String avatar = entity.getAvatar();
+        if (avatar != null) {
+            stmt.bindString(6, avatar);
+        }
+ 
+        Long gUserId = entity.getGUserId();
+        if (gUserId != null) {
+            stmt.bindLong(7, gUserId);
+        }
     }
 
     @Override
@@ -122,7 +146,9 @@ public class UserDao extends AbstractDao<User, Long> {
             cursor.getString(offset + 1), // name
             cursor.getInt(offset + 2), // gender
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // phone
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // email
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // email
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // avatar
+            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6) // gUserId
         );
         return entity;
     }
@@ -134,6 +160,8 @@ public class UserDao extends AbstractDao<User, Long> {
         entity.setGender(cursor.getInt(offset + 2));
         entity.setPhone(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setEmail(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setAvatar(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setGUserId(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
      }
     
     @Override

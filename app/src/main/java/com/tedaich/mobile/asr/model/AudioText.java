@@ -62,6 +62,4 @@ public class AudioText {
         this.createTime = createTime;
     }
 
-
-
 }
