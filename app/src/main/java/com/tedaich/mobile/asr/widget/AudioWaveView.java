@@ -12,9 +12,6 @@ import androidx.annotation.Nullable;
 
 import com.tedaich.mobile.asr.R;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AudioWaveView extends View {
 
     private Resources resources;
@@ -26,7 +23,7 @@ public class AudioWaveView extends View {
     private int waveHalfOffSet;
     private int waveSpace;
 
-    private List<Short> buf;
+    private Short[] buf;
 
     public AudioWaveView(Context context) {
         super(context);
@@ -65,17 +62,7 @@ public class AudioWaveView extends View {
         ordinaryLinePaint.setStrokeWidth(this.resources.getDimension(R.dimen.audio_wave_ordinary_line_width));
         ordinaryLinePaint.setColor(this.resources.getColor(R.color.app_gray_background));
 
-        buf = new ArrayList<>();
-        buf.add((short) 1000);
-        buf.add((short) 1000);
-        buf.add((short) 500);
-        buf.add((short) 500);
-        buf.add((short) 500);
-        buf.add((short) 500);
-        buf.add((short) 500);
-        buf.add((short) 500);
-        buf.add((short) 500);
-
+        buf = new Short[0];
     }
 
     @Override
@@ -91,26 +78,28 @@ public class AudioWaveView extends View {
         canvas.drawLine(waveHalfOffSet, centerLineHalfOffSet, viewWidth-waveHalfOffSet, centerLineHalfOffSet, ordinaryLinePaint);
         //bottom line
         canvas.drawLine(waveHalfOffSet, viewHeight - centerLineHalfOffSet, viewWidth-waveHalfOffSet, viewHeight - centerLineHalfOffSet, ordinaryLinePaint);
-        //
 
         int rateY = 1;
         float divider = 10f;
         int marginRight=30;
         float rate = 5.0f;
-        for (int i = 0; i < buf.size(); i++) {
-            float y = centerLinePos - buf.get(i)/rate;// 调节缩小比例，调节基准线
+        for (int i = 0; i < buf.length; i++) {
+            if (buf[i] == null){
+                buf[i] = 0;
+            }
+            float y = centerLinePos - buf[i]/rate;// 调节缩小比例，调节基准线
             float x = (i) * divider;
             if(getWidth() - (i-1) * divider <= marginRight){
                 x = getWidth()-marginRight;
             }
             //画线的方式很多，你可以根据自己要求去画。这里只是为了简单
-            float y1 = centerLinePos + buf.get(i)/rate;
+            float y1 = centerLinePos + buf[i]/rate;
             canvas.drawLine(x, y,  x,y1, ordinaryLinePaint);//中间出波形
         }
 
     }
 
-    public void setBuf(List<Short> buf) {
+    public void setBuf(Short[] buf) {
         this.buf = buf;
     }
 }

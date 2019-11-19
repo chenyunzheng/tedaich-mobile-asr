@@ -152,7 +152,7 @@ public class RecorderFragment extends Fragment {
                 String defaultAudioName = "语音_" + AndroidUtils.formatDate(new Date());
                 String audioPath = AudioUtils.getAudioDirectory() + File.separatorChar + defaultAudioName;
                 DaoSession daoSession = this.daoSession;
-                recordAudioTask = new RecordAudioTask(audioRecord, recBufSize, view, audioPath, daoSession);
+                recordAudioTask = new RecordAudioTask(audioRecord, recBufSize, audioWaveView, audioPath, daoSession);
                 if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED){
                     recordAudioTask.execute();
                     timerAudioService = new TimerAudioService(recorderTimer, recordAudioTask);
@@ -209,7 +209,6 @@ public class RecorderFragment extends Fragment {
                     audioWaveLinearLayout.setVisibility(View.INVISIBLE);
                     iBtnDelete.setVisibility(View.INVISIBLE);
                     iBtnSave.setVisibility(View.INVISIBLE);
-                    //delete audio file
                 })
                 .setNegativeButton(R.string.default_dialog_negative_text, (dialog, which) -> {
                     recordAudioTask.getIsRecording().set(true);
