@@ -20,7 +20,10 @@
         <com.tedaich.mobile.asr.widget.AudioWaveView
             android:id="@+id/audio_wave_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            app:horizontal_half_offset="@integer/audio_wave_horizontal_half_offset"
+            app:vertical_half_offset="@integer/audio_wave_vertical_half_offset"
+            app:wave_count_per_pixel="1.0" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

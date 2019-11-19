@@ -12,6 +12,7 @@ import com.tedaich.mobile.asr.widget.AudioWaveView;
 import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -30,7 +31,11 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
     private Short[] preAudioWaveValues;
     private int frameTakeRate;
     private long lastUpdateWaveTime = 0L;
-    private int waveCountInPixel = 5;
+
+    private Short[] test;
+    int incrementSize = 200;
+    private Random random = new Random();
+    int maxWaveCount;
 
 
     public RecordAudioTask(AudioRecord audioRecord, int recBufSize,
@@ -70,6 +75,7 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
 
     @Override
     protected void onPreExecute() {
+        maxWaveCount = audioWaveView.get().getMaxWaveCount();
         Toast.makeText(audioWaveView.get().getContext(), "Start Recording", Toast.LENGTH_SHORT).show();
         super.onPreExecute();
         new Thread(new WriteAudioService(this)).start();//开线程写文件
@@ -90,6 +96,18 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
                     for (int i = 0; i < readSize; i += frameTakeRate) {
                         audioWaveValues.add(buffer[i]);
                     }
+
+                    //for test
+                    incrementSize = incrementSize + 20;
+                    if (incrementSize > maxWaveCount){
+                        incrementSize = maxWaveCount;
+                    }
+                    test = new Short[incrementSize];
+                    for (int i = 0; i < test.length; i++){
+                        test[i] = (short)random.nextInt();
+                    }
+
+
                     publishProgress(audioWaveValues);
                     if (AudioRecord.ERROR_INVALID_OPERATION != readSize) {
                         byte[] data = new byte[2 * readSize];
@@ -132,7 +150,7 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
             if (nowTime - lastUpdateWaveTime >= updateWaveInterval){
                 CopyOnWriteArrayList audioWaveValues = (CopyOnWriteArrayList)values[0];
                 //wave view update
-                int valueCount = audioWaveView.get().getWidth() * waveCountInPixel;
+                int valueCount = audioWaveView.get().getMaxWaveCount();
                 Short[] waveValues = mergeNeighbourWaveValues(audioWaveValues, preAudioWaveValues, valueCount);
                 audioWaveValues.clear();
                 System.out.println("===== audioWaveValues.clear() =====");
@@ -160,7 +178,8 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
     }
 
     private void drawAudioWave(Short[] waveValues) {
-        audioWaveView.get().setBuf(waveValues);
+//        audioWaveView.get().setBuf(waveValues);
+        audioWaveView.get().setBuf(test);
         audioWaveView.get().invalidate();
     }
 

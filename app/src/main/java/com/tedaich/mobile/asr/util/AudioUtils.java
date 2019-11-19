@@ -1,10 +1,13 @@
 package com.tedaich.mobile.asr.util;
 
+import android.media.MediaExtractor;
+import android.media.MediaFormat;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Locale;
 
 public class AudioUtils {
@@ -100,4 +103,35 @@ public class AudioUtils {
         return String.format(Locale.getDefault(),"%02d:%02d:%02d", hour, min, sec);
     }
 
+    /**
+     * Read audio file duration.
+     * @param file audio file
+     * @return Duration in microseconds.
+     */
+    public static long readAudioDuration(File file) {
+        try {
+            MediaExtractor extractor = new MediaExtractor();
+            MediaFormat format = null;
+            int i;
+            extractor.setDataSource(file.getPath());
+            int numTracks = extractor.getTrackCount();
+            // find and select the first audio track present in the file.
+            for (i = 0; i < numTracks; i++) {
+                format = extractor.getTrackFormat(i);
+                if (format.getString(MediaFormat.KEY_MIME).startsWith("audio/")) {
+                    extractor.selectTrack(i);
+                    break;
+                }
+            }
+            if (i == numTracks) {
+                throw new IOException("No audio track found in " + file.toString());
+            }
+            if (format != null) {
+                return format.getLong(MediaFormat.KEY_DURATION);
+            }
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "error in readAudioDuration()", e);
+        }
+        return -1;
+    }
 }

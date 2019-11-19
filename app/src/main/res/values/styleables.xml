@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="AudioWaveView">
-        <attr name="center_line_half_offset" format="integer"/>
-        <attr name="wave_half_offset" format="integer"/>
+        <attr name="vertical_half_offset" format="integer"/>
+        <attr name="horizontal_half_offset" format="integer"/>
+        <attr name="wave_count_per_pixel" format="float"/>
     </declare-styleable>
     <declare-styleable name="UserItemView">
         <attr name="left_icon" format="reference"/>

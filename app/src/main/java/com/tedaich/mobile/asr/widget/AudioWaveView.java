@@ -14,16 +14,18 @@ import com.tedaich.mobile.asr.R;
 
 public class AudioWaveView extends View {
 
-    private Resources resources;
+    private static final float factor = 1.0f;
 
     private Paint centerLinePaint;
     private Paint wavePaint;
     private Paint ordinaryLinePaint;
-    private int centerLineHalfOffSet;
-    private int waveHalfOffSet;
-    private int waveSpace;
-
+    private int verticalHalfOffSet;
+    private int horizontalHalfOffSet;
+    private float waveCountPerPixel;
     private Short[] buf;
+
+    private int viewWidth;
+    private int viewHeight;
 
     public AudioWaveView(Context context) {
         super(context);
@@ -42,64 +44,67 @@ public class AudioWaveView extends View {
 
     private void init(Context context, AttributeSet attrs) {
         setFocusable(false);
-        this.resources = getResources();
+        Resources resources = getResources();
         final TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.AudioWaveView);
-        centerLineHalfOffSet = typedArray.getInt(R.styleable.AudioWaveView_center_line_half_offset, 0);
-        waveHalfOffSet = typedArray.getInt(R.styleable.AudioWaveView_wave_half_offset, 0);
+        verticalHalfOffSet = typedArray.getInt(R.styleable.AudioWaveView_vertical_half_offset, 0);
+        horizontalHalfOffSet = typedArray.getInt(R.styleable.AudioWaveView_horizontal_half_offset, 0);
+        waveCountPerPixel = typedArray.getFloat(R.styleable.AudioWaveView_wave_count_per_pixel,1.0f);
         typedArray.recycle();
 
         centerLinePaint = new Paint();
-        centerLinePaint.setStrokeWidth(this.resources.getDimension(R.dimen.audio_wave_center_line_width));
-        centerLinePaint.setColor(this.resources.getColor(R.color.app_gray_background));
+        centerLinePaint.setStrokeWidth(resources.getDimension(R.dimen.audio_wave_center_line_width));
+        centerLinePaint.setColor(resources.getColor(R.color.app_gray_background));
 
         wavePaint = new Paint();
-        wavePaint.setStrokeWidth(this.resources.getDimension(R.dimen.audio_wave_wave_width));
+        wavePaint.setStrokeWidth(resources.getDimension(R.dimen.audio_wave_wave_width));
         wavePaint.setStrokeJoin(Paint.Join.ROUND);
         wavePaint.setAntiAlias(true);
-        wavePaint.setColor(this.resources.getColor(R.color.colorPrimary));
+        wavePaint.setColor(resources.getColor(R.color.colorPrimary));
 
         ordinaryLinePaint = new Paint();
-        ordinaryLinePaint.setStrokeWidth(this.resources.getDimension(R.dimen.audio_wave_ordinary_line_width));
-        ordinaryLinePaint.setColor(this.resources.getColor(R.color.app_gray_background));
+        ordinaryLinePaint.setStrokeWidth(resources.getDimension(R.dimen.audio_wave_ordinary_line_width));
+        ordinaryLinePaint.setColor(resources.getColor(R.color.app_gray_background));
 
         buf = new Short[0];
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        viewWidth = getMeasuredWidth();
+        viewHeight = getMeasuredHeight();
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int viewWidth = getMeasuredWidth();
-        int viewHeight = getMeasuredHeight();
         float centerLinePos = viewHeight/2.0f;
-
         //center line
-        canvas.drawLine(waveHalfOffSet, centerLinePos, viewWidth-waveHalfOffSet, centerLinePos, centerLinePaint);
+        canvas.drawLine(horizontalHalfOffSet, centerLinePos, viewWidth - horizontalHalfOffSet, centerLinePos, centerLinePaint);
         //top line
-        canvas.drawLine(waveHalfOffSet, centerLineHalfOffSet, viewWidth-waveHalfOffSet, centerLineHalfOffSet, ordinaryLinePaint);
+        canvas.drawLine(horizontalHalfOffSet, verticalHalfOffSet, viewWidth - horizontalHalfOffSet, verticalHalfOffSet, ordinaryLinePaint);
         //bottom line
-        canvas.drawLine(waveHalfOffSet, viewHeight - centerLineHalfOffSet, viewWidth-waveHalfOffSet, viewHeight - centerLineHalfOffSet, ordinaryLinePaint);
+        canvas.drawLine(horizontalHalfOffSet, viewHeight - verticalHalfOffSet, viewWidth - horizontalHalfOffSet, viewHeight - verticalHalfOffSet, ordinaryLinePaint);
 
-        int rateY = 1;
-        float divider = 10f;
-        int marginRight=30;
-        float rate = 5.0f;
+        float scaleY = (centerLinePos - verticalHalfOffSet) / Short.MAX_VALUE;
         for (int i = 0; i < buf.length; i++) {
             if (buf[i] == null){
-                buf[i] = 0;
+                continue;
             }
-            float y = centerLinePos - buf[i]/rate;// 调节缩小比例，调节基准线
-            float x = (i) * divider;
-            if(getWidth() - (i-1) * divider <= marginRight){
-                x = getWidth()-marginRight;
-            }
-            //画线的方式很多，你可以根据自己要求去画。这里只是为了简单
-            float y1 = centerLinePos + buf[i]/rate;
-            canvas.drawLine(x, y,  x,y1, ordinaryLinePaint);//中间出波形
+            float y1 = centerLinePos - buf[i] * scaleY * factor;
+            float y2 = centerLinePos + buf[i] * scaleY * factor;
+            float x = i / waveCountPerPixel + horizontalHalfOffSet;
+            canvas.drawLine(x, y1, x, y2, wavePaint);
         }
 
     }
 
     public void setBuf(Short[] buf) {
         this.buf = buf;
+    }
+
+    public int getMaxWaveCount(){
+        float _count = (viewWidth - 2 * horizontalHalfOffSet) * waveCountPerPixel;
+        return Math.round(_count);
     }
 }
