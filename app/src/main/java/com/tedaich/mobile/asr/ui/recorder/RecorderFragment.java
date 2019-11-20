@@ -65,6 +65,7 @@ public class RecorderFragment extends Fragment {
     private boolean isRecording = false;
 
     //audio record
+    private boolean requireNewRecordTask;
     private int recBufSize;
     private AudioRecord audioRecord;
     private RecordAudioTask recordAudioTask;
@@ -98,14 +99,13 @@ public class RecorderFragment extends Fragment {
         audioWaveView = root.findViewById(R.id.audio_wave_view);
         audioWaveLinearLayout = root.findViewById(R.id.AudioWave_LinearLayout);
         fixedListRecyclerView = root.findViewById(R.id.fixedlist_recycler_view);
-
         prepareForAudioRecord();
+        System.out.println("==== onCreateView");
         return root;
     }
 
     private void prepareForAudioRecord() {
-        final RecorderFragment recorderFragment = this;
-        iBtnRecorder.setOnClickListener(view -> RecorderFragmentPermissionsDispatcher.handleRecordPauseWithPermissionCheck(recorderFragment, view));
+        iBtnRecorder.setOnClickListener(view -> RecorderFragmentPermissionsDispatcher.handleRecordPauseWithPermissionCheck(this, view));
         iBtnDelete.setVisibility(View.INVISIBLE);
         iBtnDelete.setOnClickListener(this::handleRecordDelete);
         iBtnSave.setVisibility(View.INVISIBLE);
@@ -123,8 +123,6 @@ public class RecorderFragment extends Fragment {
             }
         });
         recBufSize = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT);
-        audioRecord = new AudioRecord(AUDIO_SOURCE, SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT, recBufSize);
-
     }
 
     @NeedsPermission({Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -148,10 +146,12 @@ public class RecorderFragment extends Fragment {
             iBtnSave.setVisibility(View.VISIBLE);
             audioWaveLinearLayout.setVisibility(View.VISIBLE);
             //start/resume audio record
-            if (recordAudioTask == null){
-                String defaultAudioName = "语音_" + AndroidUtils.formatDate(new Date());
+            if (requireNewRecordTask){
+                String defaultAudioName = getResources().getString(R.string.default_audio_name) + "_" + AndroidUtils.formatDate(new Date());
                 String audioPath = AudioUtils.getAudioDirectory() + File.separatorChar + defaultAudioName;
                 DaoSession daoSession = this.daoSession;
+                audioRecord = new AudioRecord(AUDIO_SOURCE, SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT, recBufSize);
+                System.out.println("========= audioRecord new instance");
                 recordAudioTask = new RecordAudioTask(audioRecord, recBufSize, audioWaveView, audioPath, daoSession);
                 if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED){
                     recordAudioTask.execute();
@@ -160,6 +160,7 @@ public class RecorderFragment extends Fragment {
                 } else {
                     Toast.makeText(this.getContext(), getResources().getString(R.string.error_audiorecord_uninitialized), Toast.LENGTH_LONG).show();
                 }
+                requireNewRecordTask = !requireNewRecordTask;
             } else {
                 if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED){
                     recordAudioTask.getIsRecording().set(true);
@@ -175,6 +176,29 @@ public class RecorderFragment extends Fragment {
         RecorderFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        requireNewRecordTask = true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        requireNewRecordTask = true;
+    }
+
+    @Override
+    public void onStop() {
+        recordAudioTask.getIsRecording().set(false);
+        if (audioRecord != null && audioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING){
+            audioRecord.stop();
+        }
+        recordAudioTask.getIsDelete().set(true);
+        timerAudioService.stop();
+        super.onStop();
+    }
+
     private void handleRecordSave(View view) {
         recordAudioTask.getIsRecording().set(false);
         String title = getResources().getString(R.string.app_name);
@@ -185,11 +209,11 @@ public class RecorderFragment extends Fragment {
                 .setPositiveButton(R.string.default_dialog_positive_text,(dialog, which) -> {
                     recordAudioTask.getIsSave().set(true);
                     timerAudioService.stop();
+                    iBtnRecorder.setImageDrawable(getResources().getDrawable(R.drawable.btn_circle_record));
+                    recorderTimer.setText(R.string.recorder_timer);
                     audioWaveLinearLayout.setVisibility(View.INVISIBLE);
                     iBtnDelete.setVisibility(View.INVISIBLE);
                     iBtnSave.setVisibility(View.INVISIBLE);
-                    //save audio metadata and update list
-                    recorderViewModel.saveAudioMetadata();
                 })
                 .setNegativeButton(R.string.default_dialog_negative_text, (dialog, which) -> {
                     recordAudioTask.getIsRecording().set(true);
