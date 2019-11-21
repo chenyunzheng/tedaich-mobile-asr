@@ -15,30 +15,28 @@ public class RecorderViewModel extends ViewModel {
 
     private DaoSession daoSession;
 
-    private MutableLiveData<String> mText;
     private MutableLiveData<List<Audio>> mAudioList;
 
     public RecorderViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("This is dashboard fragment");
-
         mAudioList = new MutableLiveData<>();
-        List<Audio> audioList = new ArrayList<>();
-        Audio audio = new Audio();
-        audio.setName("demo");
-        audio.setCreateTime(new Date());
-        audio.setDuration("00:39");
-        audioList.add(audio);
-        Audio audio1 = new Audio();
-        audio1.setName("demo-1");
-        audio1.setCreateTime(new Date());
-        audio1.setDuration("01:22");
-        audioList.add(audio1);
-        mAudioList.setValue(audioList);
-    }
+        new Thread(() -> {
+            List<Audio> audioList = new ArrayList<>();
+            int times = 5;
+            while (times-- > 0){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Audio audio2 = new Audio();
+                audio2.setName("demo-" + times);
+                audio2.setCreateTime(new Date());
+                audio2.setDuration("01:22");
+                audioList.add(audio2);
+                mAudioList.postValue(audioList);
+            }
+        }).start();
 
-    public LiveData<String> getText() {
-        return mText;
     }
 
     public LiveData<List<Audio>> getAudioList() {
