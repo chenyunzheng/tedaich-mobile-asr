@@ -7,11 +7,12 @@
     <dimen name="audio_wave_wave_width">1dp</dimen>
     <dimen name="audio_wave_ordinary_line_width">1dp</dimen>
 
-    <dimen name="spacing_super_wide">20dp</dimen>
-    <dimen name="spacing_extra_wide">20dp</dimen>
+    <dimen name="spacing_super_wide">28dp</dimen>
+    <dimen name="spacing_extra_wide">24dp</dimen>
     <dimen name="spacing_wide">20dp</dimen>
     <dimen name="spacing_normal">16dp</dimen>
     <dimen name="spacing_narrow">12dp</dimen>
+    <dimen name="spacing_extra_narrow">10dp</dimen>
 
     <dimen name="btn_super_size">80dp</dimen>
     <dimen name="btn_extra_large_size">72dp</dimen>

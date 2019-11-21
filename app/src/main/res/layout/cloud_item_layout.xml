@@ -46,7 +46,7 @@
             android:textSize="12sp" />
 
         <Button
-            android:id="@+id/more_option"
+            android:id="@+id/cloud_item_more_option"
             android:layout_width="@dimen/btn_more_width"
             android:layout_height="@dimen/btn_tiny_size"
             android:layout_alignParentEnd="true"

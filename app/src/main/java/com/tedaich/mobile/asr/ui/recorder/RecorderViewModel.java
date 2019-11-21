@@ -29,6 +29,11 @@ public class RecorderViewModel extends ViewModel {
         audio.setCreateTime(new Date());
         audio.setDuration("00:39");
         audioList.add(audio);
+        Audio audio1 = new Audio();
+        audio1.setName("demo-1");
+        audio1.setCreateTime(new Date());
+        audio1.setDuration("01:22");
+        audioList.add(audio1);
         mAudioList.setValue(audioList);
     }
 

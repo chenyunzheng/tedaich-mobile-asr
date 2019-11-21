@@ -6,7 +6,7 @@
     <string name="recorder_timer">00:00:00</string>
     <string name="default_audio_name">New Audio</string>
     <string name="default_audio_datetime">2019&#8211;11&#8211;11 10:45:00</string>
-    <string name="default_audio_duration">00:00</string>
+    <string name="default_audio_duration">00:00:00</string>
     <string name="btn_upload_tips_name">上传</string>
     <string name="btn_transfer_tips_name">转成文字</string>
     <string name="btn_more_tips_name">更多</string>

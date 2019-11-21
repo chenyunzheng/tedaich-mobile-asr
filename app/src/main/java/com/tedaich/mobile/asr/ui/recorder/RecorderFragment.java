@@ -115,7 +115,7 @@ public class RecorderFragment extends Fragment {
         fixedListRecyclerView.setHasFixedSize(true);
         fixedListRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         recorderViewModel.setDaoSession(daoSession);
-        cloudViewModel.getAudioList().observe(this, new Observer<List<Audio>>() {
+        recorderViewModel.getAudioList().observe(this, new Observer<List<Audio>>() {
             @Override
             public void onChanged(List<Audio> audioList) {
                 RecorderAudioItemAdapter adapter = new RecorderAudioItemAdapter(audioList);
@@ -190,12 +190,16 @@ public class RecorderFragment extends Fragment {
 
     @Override
     public void onStop() {
-        recordAudioTask.getIsRecording().set(false);
         if (audioRecord != null && audioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING){
             audioRecord.stop();
         }
-        recordAudioTask.getIsDelete().set(true);
-        timerAudioService.stop();
+        if (recordAudioTask != null){
+            recordAudioTask.getIsRecording().set(false);
+            recordAudioTask.getIsDelete().set(true);
+        }
+        if (timerAudioService != null){
+            timerAudioService.stop();
+        }
         super.onStop();
     }
 

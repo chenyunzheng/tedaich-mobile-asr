@@ -1,5 +1,8 @@
 package com.tedaich.mobile.asr.util;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.text.Html;
@@ -100,6 +103,22 @@ public class AndroidUtils {
         };
         Spanned span = Html.fromHtml("<img src=\"" + iconDrawable + "\"/>" + text, imgGetter, null);
         button.setText(span);
+    }
+
+    /**
+     * get app version
+     * @param context
+     * @return
+     */
+    public static String getAppVersion(Context context) {
+        String versionName;
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            versionName = info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            versionName = "N/A";
+        }
+        return versionName;
     }
 
 }

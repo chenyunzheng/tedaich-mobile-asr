@@ -22,6 +22,8 @@ public class CloudAudioItemAdapter extends RecorderAudioItemAdapter {
     @Override
     public AudioItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cloud_item_layout,parent,false);
+        view.findViewById(R.id.Audio_Player_LinearLayout).setVisibility(View.GONE);
+        view.findViewById(R.id.audio_item_more).setVisibility(View.INVISIBLE);
         AudioItemViewHolder viewHolder = new AudioItemViewHolder(view);
         return viewHolder;
     }
