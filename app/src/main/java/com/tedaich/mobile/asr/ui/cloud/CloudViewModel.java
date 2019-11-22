@@ -28,7 +28,7 @@ public class CloudViewModel extends ViewModel {
         Audio audio = new Audio();
         audio.setName("demo");
         audio.setCreateTime(new Date());
-        audio.setDuration("00:39");
+        audio.setDuration(1000L);
         audioList.add(audio);
         mAudioList.setValue(audioList);
     }

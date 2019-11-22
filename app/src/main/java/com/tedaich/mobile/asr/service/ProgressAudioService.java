@@ -6,7 +6,7 @@ public class ProgressAudioService implements Runnable {
 
     private static final long INTERVAL = 1000/25;
 
-    interface ProgressCallback{
+    public interface ProgressCallback{
         void execute(long progressInMilliSec);
     }
 
@@ -16,7 +16,12 @@ public class ProgressAudioService implements Runnable {
     private boolean start;
 
     public ProgressAudioService(){
+        progressInMilliSec = 0;
         handler = new Handler();
+    }
+
+    public void setProgressInMilliSec(long progressInMilliSec) {
+        this.progressInMilliSec = progressInMilliSec;
     }
 
     public void setProgressCallback(ProgressCallback progressCallback){
@@ -36,8 +41,9 @@ public class ProgressAudioService implements Runnable {
 
     public void start(){
         start = true;
-        progressInMilliSec = 0;
-        handler.postDelayed(this, 0);
+        if (!handler.hasCallbacks(this)){
+            handler.postDelayed(this, 0);
+        }
     }
 
     public void pause(){

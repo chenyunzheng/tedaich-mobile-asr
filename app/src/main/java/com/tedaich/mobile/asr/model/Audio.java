@@ -28,7 +28,7 @@ public class Audio {
     @NotNull
     private Date createTime;
     @NotNull
-    private String duration;
+    private Long duration;
     @NotNull
     private float fileSize;
     @NotNull
@@ -40,12 +40,6 @@ public class Audio {
     @ToMany(referencedJoinProperty = "audioId")
     private List<AudioText> audioTextList;
 
-    @Keep
-    public Audio(Long userId, @NotNull String name, @NotNull String fileName, @NotNull Date createTime,
-                 @NotNull String duration, float fileSize, @NotNull String storePath) {
-        this(null, userId, name, fileName, createTime, duration, fileSize,  storePath, 0, false, "");
-    }
-
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
@@ -53,10 +47,16 @@ public class Audio {
     @Generated(hash = 226033729)
     private transient AudioDao myDao;
 
-    @Generated(hash = 427671841)
+    @Keep
+    public Audio(Long userId, @NotNull String name, @NotNull String fileName, @NotNull Date createTime,
+                 @NotNull Long duration, float fileSize, @NotNull String storePath) {
+        this(null, userId, name, fileName, createTime, duration, fileSize,  storePath, 0, false, "");
+    }
+
+    @Generated(hash = 94761005)
     public Audio(Long id, Long userId, @NotNull String name, @NotNull String fileName,
-            @NotNull Date createTime, @NotNull String duration, float fileSize,
-            @NotNull String storePath, int status, boolean onCloud, String audioToText) {
+            @NotNull Date createTime, @NotNull Long duration, float fileSize, @NotNull String storePath,
+            int status, boolean onCloud, String audioToText) {
         this.id = id;
         this.userId = userId;
         this.name = name;
@@ -114,11 +114,11 @@ public class Audio {
         this.createTime = createTime;
     }
 
-    public String getDuration() {
+    public Long getDuration() {
         return this.duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(Long duration) {
         this.duration = duration;
     }
 

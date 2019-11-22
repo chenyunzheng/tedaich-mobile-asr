@@ -100,7 +100,6 @@ public class RecorderFragment extends Fragment {
         audioWaveLinearLayout = root.findViewById(R.id.AudioWave_LinearLayout);
         fixedListRecyclerView = root.findViewById(R.id.fixedlist_recycler_view);
         prepareForAudioRecord();
-        System.out.println("==== onCreateView");
         return root;
     }
 
