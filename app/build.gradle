@@ -31,7 +31,7 @@ android {
 }
 
 greendao {
-    schemaVersion 1
+    schemaVersion 2
     daoPackage "com.tedaich.mobile.asr.dao"
     targetGenDir 'src/main/java'
     generateTests false

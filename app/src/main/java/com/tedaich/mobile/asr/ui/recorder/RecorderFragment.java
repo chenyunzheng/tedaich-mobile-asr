@@ -3,6 +3,7 @@ package com.tedaich.mobile.asr.ui.recorder;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
@@ -19,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,10 +30,10 @@ import com.tedaich.mobile.asr.dao.DaoSession;
 import com.tedaich.mobile.asr.model.Audio;
 import com.tedaich.mobile.asr.service.RecordAudioTask;
 import com.tedaich.mobile.asr.service.TimerAudioService;
-import com.tedaich.mobile.asr.ui.cloud.CloudViewModel;
 import com.tedaich.mobile.asr.ui.recorder.adapter.RecorderAudioItemAdapter;
 import com.tedaich.mobile.asr.util.AndroidUtils;
 import com.tedaich.mobile.asr.util.AudioUtils;
+import com.tedaich.mobile.asr.util.Constants;
 import com.tedaich.mobile.asr.widget.AudioWaveView;
 
 import java.io.File;
@@ -53,7 +53,7 @@ public class RecorderFragment extends Fragment {
 
     private FragmentActivity fragmentActivity;
     private RecorderViewModel recorderViewModel;
-    private CloudViewModel cloudViewModel;
+    private SharedPreferences sharedPreferences;
 
     private ImageButton iBtnRecorder;
     private ImageButton iBtnDelete;
@@ -62,6 +62,7 @@ public class RecorderFragment extends Fragment {
     private AudioWaveView audioWaveView;
     private LinearLayout audioWaveLinearLayout;
     private RecyclerView fixedListRecyclerView;
+    private RecorderAudioItemAdapter recorderAudioItemAdapter;
     private boolean isRecording = false;
 
     //audio record
@@ -77,6 +78,7 @@ public class RecorderFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         fragmentActivity = (FragmentActivity) context;
+        sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
         daoSession = ((App) fragmentActivity.getApplication()).getDaoSession();
     }
 
@@ -89,7 +91,7 @@ public class RecorderFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         recorderViewModel = ViewModelProviders.of(fragmentActivity).get(RecorderViewModel.class);
-        cloudViewModel = ViewModelProviders.of(fragmentActivity).get(CloudViewModel.class);
+        recorderViewModel.setDaoSession(daoSession);
 
         View root = inflater.inflate(R.layout.fragment_recorder, container, false);
         iBtnRecorder = root.findViewById(R.id.btn_recorder);
@@ -113,13 +115,13 @@ public class RecorderFragment extends Fragment {
 
         fixedListRecyclerView.setHasFixedSize(true);
         fixedListRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        recorderViewModel.setDaoSession(daoSession);
-        recorderViewModel.getAudioList().observe(this, new Observer<List<Audio>>() {
-            @Override
-            public void onChanged(List<Audio> audioList) {
-                RecorderAudioItemAdapter adapter = new RecorderAudioItemAdapter(audioList);
-                fixedListRecyclerView.setAdapter(adapter);
+        int userId = (int)sharedPreferences.getLong("CURRENT_USER_ID", -1);
+        recorderViewModel.getAudioList(userId, getResources().getInteger(R.integer.recycler_view_fixed_item_count)).observe(this, audioList -> {
+            if (recorderAudioItemAdapter != null){
+                recorderAudioItemAdapter.release();
             }
+            recorderAudioItemAdapter = new RecorderAudioItemAdapter(audioList);
+            fixedListRecyclerView.setAdapter(recorderAudioItemAdapter);
         });
         recBufSize = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT);
     }
@@ -152,6 +154,13 @@ public class RecorderFragment extends Fragment {
                 audioRecord = new AudioRecord(AUDIO_SOURCE, SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT, recBufSize);
                 System.out.println("========= audioRecord new instance");
                 recordAudioTask = new RecordAudioTask(audioRecord, recBufSize, audioWaveView, audioPath, daoSession);
+                recordAudioTask.setAudioSaveCompletedListener((audio) -> {
+                    if (recorderAudioItemAdapter != null){
+                        List<Audio> audioList = recorderAudioItemAdapter.getAudioList();
+                        audioList.add(0, audio);
+                        recorderAudioItemAdapter.notifyItemInserted(0);
+                    }
+                });
                 if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED){
                     recordAudioTask.execute();
                     timerAudioService = new TimerAudioService(recorderTimer, recordAudioTask);
@@ -212,6 +221,7 @@ public class RecorderFragment extends Fragment {
                 .setPositiveButton(R.string.default_dialog_positive_text,(dialog, which) -> {
                     recordAudioTask.getIsSave().set(true);
                     timerAudioService.stop();
+                    requireNewRecordTask = false;
                     iBtnRecorder.setImageDrawable(getResources().getDrawable(R.drawable.btn_circle_record));
                     recorderTimer.setText(R.string.recorder_timer);
                     audioWaveLinearLayout.setVisibility(View.INVISIBLE);
@@ -233,6 +243,7 @@ public class RecorderFragment extends Fragment {
                 .setPositiveButton(R.string.default_dialog_positive_text,(dialog, which) -> {
                     recordAudioTask.getIsDelete().set(true);
                     timerAudioService.stop();
+                    requireNewRecordTask = false;
                     audioWaveLinearLayout.setVisibility(View.INVISIBLE);
                     iBtnDelete.setVisibility(View.INVISIBLE);
                     iBtnSave.setVisibility(View.INVISIBLE);

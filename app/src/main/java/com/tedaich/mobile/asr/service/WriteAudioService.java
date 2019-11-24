@@ -12,10 +12,19 @@ class WriteAudioService implements Runnable {
 
     private static final String LOG_TAG = "WriteAudioService";
 
+    public interface WriteAudioCallback{
+        void execute(String wavAudioPath);
+    }
+
     private RecordAudioTask recordAudioTask;
+    private WriteAudioCallback writeAudioCallback;
 
     public WriteAudioService(RecordAudioTask recordAudioTask) {
         this.recordAudioTask = recordAudioTask;
+    }
+
+    public void setWriteAudioCallback(WriteAudioCallback writeAudioCallback){
+        this.writeAudioCallback = writeAudioCallback;
     }
 
     @Override
@@ -55,6 +64,9 @@ class WriteAudioService implements Runnable {
         if (recordAudioTask.getIsSave().get()){
             try {
                 AudioUtils.convertPCMToWAV(pcmAudioPath, wavAudioPath, false);
+                if (writeAudioCallback != null){
+                    writeAudioCallback.execute(wavAudioPath);
+                }
             } catch (Exception e) {
                 Log.e(LOG_TAG, "error in converting pcm to wav file", e);
             }

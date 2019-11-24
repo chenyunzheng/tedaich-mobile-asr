@@ -51,6 +51,16 @@ public class AudioPlayer implements MediaPlayer.OnPreparedListener, MediaPlayer.
                     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     mediaPlayer.setOnPreparedListener(this);
                     mediaPlayer.prepareAsync();
+
+//                    mediaPlayer.setOnCompletionListener(this);
+                    if (progressAudioService != null){
+                        progressAudioService.setProgressCallback((progressInMilliSec) -> {
+                            if (playerCallback != null){
+                                playerCallback.onProgress(progressInMilliSec);
+                            }
+                        });
+                    }
+                    this.status = AudioPlayer.PREPARED;
                 }
             } catch (IOException e) {
                 Log.e(LOG_TAG, "error in prepare()", e);

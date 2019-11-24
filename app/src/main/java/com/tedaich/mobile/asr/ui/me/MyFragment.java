@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.tedaich.mobile.asr.R;
 import com.tedaich.mobile.asr.activity.UserLoginActivity;
+import com.tedaich.mobile.asr.model.User;
 import com.tedaich.mobile.asr.util.Constants;
 import com.tedaich.mobile.asr.widget.CircleImageView;
 
@@ -64,9 +65,13 @@ public class MyFragment extends Fragment {
                 //update current user info into shared preference
                 SharedPreferences.Editor spEditor = sharedPreferences.edit();
                 spEditor.putLong("G_USER_ID", data.getLongExtra("G_USER_ID", -1));
+
                 spEditor.apply();
                 //check or update user table by g_user_id
-
+                User user = new User();
+                //update local user id into shared preference
+                spEditor.putLong("CURRENT_USER_ID", user.getId() == null ? -1 : user.getId());
+                spEditor.apply();
             }
         }
     }

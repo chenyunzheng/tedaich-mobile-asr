@@ -26,7 +26,7 @@ public class Audio {
     @NotNull
     private String fileName;
     @NotNull
-    private Date createTime;
+    private Date recordTime;
     @NotNull
     private Long duration;
     @NotNull
@@ -48,20 +48,20 @@ public class Audio {
     private transient AudioDao myDao;
 
     @Keep
-    public Audio(Long userId, @NotNull String name, @NotNull String fileName, @NotNull Date createTime,
+    public Audio(Long userId, @NotNull String name, @NotNull String fileName, @NotNull Date recordTime,
                  @NotNull Long duration, float fileSize, @NotNull String storePath) {
-        this(null, userId, name, fileName, createTime, duration, fileSize,  storePath, 0, false, "");
+        this(null, userId, name, fileName, recordTime, duration, fileSize,  storePath, 0, false, "");
     }
 
-    @Generated(hash = 94761005)
+    @Generated(hash = 552111553)
     public Audio(Long id, Long userId, @NotNull String name, @NotNull String fileName,
-            @NotNull Date createTime, @NotNull Long duration, float fileSize, @NotNull String storePath,
+            @NotNull Date recordTime, @NotNull Long duration, float fileSize, @NotNull String storePath,
             int status, boolean onCloud, String audioToText) {
         this.id = id;
         this.userId = userId;
         this.name = name;
         this.fileName = fileName;
-        this.createTime = createTime;
+        this.recordTime = recordTime;
         this.duration = duration;
         this.fileSize = fileSize;
         this.storePath = storePath;
@@ -106,12 +106,12 @@ public class Audio {
         this.fileName = fileName;
     }
 
-    public Date getCreateTime() {
-        return this.createTime;
+    public Date getRecordTime() {
+        return this.recordTime;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setRecordTime(Date recordTime) {
+        this.recordTime = recordTime;
     }
 
     public Long getDuration() {

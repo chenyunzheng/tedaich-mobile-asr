@@ -79,7 +79,7 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
     public void onBindViewHolder(@NonNull AudioItemViewHolder holder, int position) {
         Audio audio = audioList.get(position);
         holder.audioName.setText(audio.getName());
-        holder.audioDateTime.setText(audio.getCreateTime().toString());
+//        holder.audioDateTime.setText(audio.getCreateTime().toString());
         holder.audioDuration.setText(AudioUtils.getTimerValue(audio.getDuration()));
         holder.audioFilePath = audio.getStorePath() + File.separatorChar + audio.getFileName();
 //        holder.audioId = audio.getId();
@@ -161,5 +161,17 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
     public int getItemCount() {
         return audioList == null ? 0 : audioList.size();
     }
+
+    public List<Audio> getAudioList() {
+        return audioList;
+    }
+
+    public void release() {
+        for (AudioPlayer audioPlayer : audioPlayers) {
+            audioPlayer.release();
+        }
+    }
+
+
 
 }

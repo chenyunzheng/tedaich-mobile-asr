@@ -29,12 +29,9 @@
     <string name="default_dialog_positive_text">确定</string>
     <string name="default_dialog_negative_text">取消</string>
 
-
-
-
     <string name="error_audiorecord_uninitialized">麦克风不可用</string>
 
-    <string name="default_db_name">tedaich_asr</string>
+    <string name="default_db_name">tedaich_asr.db</string>
 
     <string name="label_user_login_activity">用户登录/注册</string>
 

@@ -105,26 +105,27 @@ public class AudioUtils {
 
     /**
      * Read audio file duration.
-     * @param file audio file
+     * @param audio audio file
      * @return Duration in microseconds.
      */
-    public static long readAudioDuration(File file) {
+    public static long getAudioDuration(File audio) {
         try {
             MediaExtractor extractor = new MediaExtractor();
+            extractor.setDataSource(audio.getPath());
+            int numTracks = extractor.getTrackCount();
             MediaFormat format = null;
             int i;
-            extractor.setDataSource(file.getPath());
-            int numTracks = extractor.getTrackCount();
             // find and select the first audio track present in the file.
             for (i = 0; i < numTracks; i++) {
                 format = extractor.getTrackFormat(i);
-                if (format.getString(MediaFormat.KEY_MIME).startsWith("audio/")) {
+                String mime = format.getString(MediaFormat.KEY_MIME);
+                if (mime != null && mime.startsWith("audio/")) {
                     extractor.selectTrack(i);
                     break;
                 }
             }
             if (i == numTracks) {
-                throw new IOException("No audio track found in " + file.toString());
+                throw new IOException("No audio track found in " + audio.toString());
             }
             if (format != null) {
                 return format.getLong(MediaFormat.KEY_DURATION);

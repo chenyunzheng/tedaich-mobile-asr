@@ -32,7 +32,7 @@ public class AudioDao extends AbstractDao<Audio, Long> {
         public final static Property UserId = new Property(1, Long.class, "userId", false, "USER_ID");
         public final static Property Name = new Property(2, String.class, "name", false, "NAME");
         public final static Property FileName = new Property(3, String.class, "fileName", false, "FILE_NAME");
-        public final static Property CreateTime = new Property(4, java.util.Date.class, "createTime", false, "CREATE_TIME");
+        public final static Property RecordTime = new Property(4, java.util.Date.class, "recordTime", false, "RECORD_TIME");
         public final static Property Duration = new Property(5, Long.class, "duration", false, "DURATION");
         public final static Property FileSize = new Property(6, float.class, "fileSize", false, "FILE_SIZE");
         public final static Property StorePath = new Property(7, String.class, "storePath", false, "STORE_PATH");
@@ -62,7 +62,7 @@ public class AudioDao extends AbstractDao<Audio, Long> {
                 "\"USER_ID\" INTEGER," + // 1: userId
                 "\"NAME\" TEXT NOT NULL ," + // 2: name
                 "\"FILE_NAME\" TEXT NOT NULL ," + // 3: fileName
-                "\"CREATE_TIME\" INTEGER NOT NULL ," + // 4: createTime
+                "\"RECORD_TIME\" INTEGER NOT NULL ," + // 4: recordTime
                 "\"DURATION\" INTEGER NOT NULL ," + // 5: duration
                 "\"FILE_SIZE\" REAL NOT NULL ," + // 6: fileSize
                 "\"STORE_PATH\" TEXT NOT NULL ," + // 7: storePath
@@ -92,7 +92,7 @@ public class AudioDao extends AbstractDao<Audio, Long> {
         }
         stmt.bindString(3, entity.getName());
         stmt.bindString(4, entity.getFileName());
-        stmt.bindLong(5, entity.getCreateTime().getTime());
+        stmt.bindLong(5, entity.getRecordTime().getTime());
         stmt.bindLong(6, entity.getDuration());
         stmt.bindDouble(7, entity.getFileSize());
         stmt.bindString(8, entity.getStorePath());
@@ -120,7 +120,7 @@ public class AudioDao extends AbstractDao<Audio, Long> {
         }
         stmt.bindString(3, entity.getName());
         stmt.bindString(4, entity.getFileName());
-        stmt.bindLong(5, entity.getCreateTime().getTime());
+        stmt.bindLong(5, entity.getRecordTime().getTime());
         stmt.bindLong(6, entity.getDuration());
         stmt.bindDouble(7, entity.getFileSize());
         stmt.bindString(8, entity.getStorePath());
@@ -151,7 +151,7 @@ public class AudioDao extends AbstractDao<Audio, Long> {
             cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // userId
             cursor.getString(offset + 2), // name
             cursor.getString(offset + 3), // fileName
-            new java.util.Date(cursor.getLong(offset + 4)), // createTime
+            new java.util.Date(cursor.getLong(offset + 4)), // recordTime
             cursor.getLong(offset + 5), // duration
             cursor.getFloat(offset + 6), // fileSize
             cursor.getString(offset + 7), // storePath
@@ -168,7 +168,7 @@ public class AudioDao extends AbstractDao<Audio, Long> {
         entity.setUserId(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
         entity.setName(cursor.getString(offset + 2));
         entity.setFileName(cursor.getString(offset + 3));
-        entity.setCreateTime(new java.util.Date(cursor.getLong(offset + 4)));
+        entity.setRecordTime(new java.util.Date(cursor.getLong(offset + 4)));
         entity.setDuration(cursor.getLong(offset + 5));
         entity.setFileSize(cursor.getFloat(offset + 6));
         entity.setStorePath(cursor.getString(offset + 7));

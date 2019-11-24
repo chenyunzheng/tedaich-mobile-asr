@@ -3,4 +3,5 @@
     <integer name="audio_frame_take_rate">100</integer>
     <integer name="audio_wave_vertical_half_offset">300</integer>
     <integer name="audio_wave_horizontal_half_offset">70</integer>
+    <integer name="recycler_view_fixed_item_count">5</integer>
 </resources>

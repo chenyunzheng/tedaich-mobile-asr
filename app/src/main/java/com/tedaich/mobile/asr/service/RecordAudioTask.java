@@ -1,14 +1,24 @@
 package com.tedaich.mobile.asr.service;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.media.AudioRecord;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.tedaich.mobile.asr.R;
 import com.tedaich.mobile.asr.dao.DaoSession;
+import com.tedaich.mobile.asr.dao.UserDao;
+import com.tedaich.mobile.asr.model.Audio;
+import com.tedaich.mobile.asr.model.User;
 import com.tedaich.mobile.asr.util.AndroidUtils;
+import com.tedaich.mobile.asr.util.AudioUtils;
+import com.tedaich.mobile.asr.util.Constants;
 import com.tedaich.mobile.asr.widget.AudioWaveView;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.List;
@@ -17,14 +27,22 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RecordAudioTask extends AsyncTask<Object, List, Object> {
 
+    private static final String LOG_TAG = "RecordAudioTask";
+
+    public interface AudioSaveCompletedListener{
+        void onAudioSaveCompleted(Audio audio);
+    }
+
     private AudioRecord audioRecord;
     private int recBufSize;
     private WeakReference<AudioWaveView> audioWaveView;
     private String audioPath;
+    private Date recordTime;
     private DaoSession daoSession;
     private AtomicBoolean isRecording;
     private AtomicBoolean isDelete;
     private AtomicBoolean isSave;
+    private AudioSaveCompletedListener audioSaveCompletedListener;
 
     private CopyOnWriteArrayList<byte[]> audioData;
     private Short[] preAudioWaveValues;
@@ -66,12 +84,39 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
         return audioData;
     }
 
+    public void setAudioSaveCompletedListener(AudioSaveCompletedListener audioSaveCompletedListener){
+        this.audioSaveCompletedListener = audioSaveCompletedListener;
+    }
+
     @Override
     protected void onPreExecute() {
         Toast.makeText(audioWaveView.get().getContext(), "Start Recording", Toast.LENGTH_SHORT).show();
         super.onPreExecute();
-
-        new Thread(new WriteAudioService(this)).start();//开线程写文件
+        final Resources resources = audioWaveView.get().getResources();
+        final SharedPreferences sharedPreferences = audioWaveView.get().getContext().getSharedPreferences(Constants.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        WriteAudioService writeAudioService = new WriteAudioService(this);
+        writeAudioService.setWriteAudioCallback(wavAudioPath -> {
+            File wavFile = new File(wavAudioPath);
+            String name = resources.getString(R.string.default_audio_name);
+            String fileName = wavFile.getName();
+            long duration = AudioUtils.getAudioDuration(wavFile);
+            float fileSize = (float)wavFile.length() / 1024;
+            String storePath = wavFile.getParent();
+            //add audio metadata into db
+            long gUserId = sharedPreferences.getLong("G_USER_ID", -1);
+            long userId = -1;
+            if (gUserId != -1){
+                User currentUser = daoSession.queryBuilder(User.class).where(UserDao.Properties.GUserId.eq(gUserId)).unique();
+                userId = currentUser.getId();
+            }
+            Audio audio = new Audio(userId, name, fileName, recordTime, duration, fileSize, storePath);
+            daoSession.getAudioDao().insert(audio);
+            Log.i(LOG_TAG, "insert audio metadata into db and audio id = " + audio.getId());
+            if (audioSaveCompletedListener != null){
+                audioSaveCompletedListener.onAudioSaveCompleted(audio);
+            }
+        });
+        new Thread(writeAudioService).start();//开线程写文件
     }
 
     @Override
@@ -83,7 +128,10 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
             if (isRecording.get()){
                 audioRecord.startRecording();
                 startRecordTime = System.currentTimeMillis();
-                System.out.println("start recording...");
+                if (recordTime == null){
+                    recordTime = new Date();
+                }
+                Log.i(LOG_TAG,"start recording...");
                 while (isRecording.get() && audioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING){
                     int readSize = audioRecord.read(buffer, 0, recBufSize);
                     for (int i = 0; i < readSize; i += frameTakeRate) {
@@ -108,16 +156,9 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
                 }
             }
         }
+        Log.i(LOG_TAG, "record audio completed, duration = " + duration);
         if (audioRecord.getRecordingState() == AudioRecord.RECORDSTATE_RECORDING){
             audioRecord.stop();
-        }
-        if (isSave.get()) {
-            //add audio metadata into db
-            //view.get().getContext().getSharedPreferences()
-//            Audio audio = new Audio();
-//            AudioDao audioDao = daoSession.getAudioDao();
-//            long _id = audioDao.insert(audio);
-            
         }
         return null;
     }
