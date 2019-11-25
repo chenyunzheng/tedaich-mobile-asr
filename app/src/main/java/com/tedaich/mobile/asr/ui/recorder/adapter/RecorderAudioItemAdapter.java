@@ -1,9 +1,15 @@
 package com.tedaich.mobile.asr.ui.recorder.adapter;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.res.Resources;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -15,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import com.tedaich.mobile.asr.R;
 import com.tedaich.mobile.asr.model.Audio;
+import com.tedaich.mobile.asr.util.AndroidUtils;
 import com.tedaich.mobile.asr.util.AudioUtils;
 import com.tedaich.mobile.asr.util.player.AudioPlayer;
 import com.tedaich.mobile.asr.util.player.PlayerCallback;
@@ -79,17 +86,25 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
     public void onBindViewHolder(@NonNull AudioItemViewHolder holder, int position) {
         Audio audio = audioList.get(position);
         holder.audioName.setText(audio.getName());
-//        holder.audioDateTime.setText(audio.getCreateTime().toString());
+        holder.audioDateTime.setText(AndroidUtils.formatDateWithoutMillisec(audio.getRecordTime()));
         holder.audioDuration.setText(AudioUtils.getTimerValue(audio.getDuration()));
         holder.audioFilePath = audio.getStorePath() + File.separatorChar + audio.getFileName();
 //        holder.audioId = audio.getId();
         holder.audioOnCloud = audio.getOnCloud();
         holder.audioStatus = audio.getStatus();
         float seekBarScale = holder.audioPlayProgress.getMax() / (float)audio.getDuration();
+        if (position >= this.audioPlayers.length){
+            AudioPlayer[] _audioPlayers = new AudioPlayer[position+1];
+            System.arraycopy(this.audioPlayers,0,_audioPlayers,0,this.audioPlayers.length);
+            for (int i = this.audioPlayers.length; i <= position; i++){
+                _audioPlayers[i] = new AudioPlayer();
+            }
+            this.audioPlayers = _audioPlayers;
+        }
         AudioPlayer audioPlayer = this.audioPlayers[position];
 
         holder.moreBtn.setOnClickListener(view -> {
-            Toast.makeText(view.getContext(), "in developing, including rename, delete", Toast.LENGTH_SHORT).show();
+            showDialog(view.getContext(), holder);
         });
         holder.audioPlayerBtn.setOnClickListener(view -> {
             ImageButton audioPlayerBtn = (ImageButton)view;
@@ -172,6 +187,37 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
         }
     }
 
+    private void showDialog(Context context, AudioItemViewHolder holder) {
+        View view = LayoutInflater.from(context).inflate(R.layout.audio_item_more_layout,null,false);
+        final AlertDialog moreDialog = new AlertDialog.Builder(context).setView(view).create();
+        Button shareBtn = view.findViewById(R.id.audio_share);
+        Button renameBtn = view.findViewById(R.id.audio_rename);
+        Button deleteBtn = view.findViewById(R.id.audio_delete);
+
+        shareBtn.setOnClickListener(v -> {
+            Toast.makeText(context,"in developing through bluetooth, email, etc", Toast.LENGTH_SHORT).show();
+        });
+        renameBtn.setOnClickListener(v -> {
+            Toast.makeText(context,"renameBtn", Toast.LENGTH_SHORT).show();
+        });
+        deleteBtn.setOnClickListener(v -> {
+            Toast.makeText(context,"deleteBtn", Toast.LENGTH_SHORT).show();
+        });
+
+        moreDialog.show();
+        Window dialogWindow = moreDialog.getWindow();
+        if (dialogWindow != null){
+            dialogWindow.setGravity(Gravity.BOTTOM);
+            dialogWindow.getDecorView().setPadding(0, 0, 0, 0);
+//            dialogWindow.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//            lp.dimAmount = 0.5f;
+            dialogWindow.setBackgroundDrawable(null);
+            dialogWindow.setAttributes(lp);
+        }
+    }
 
 
 }

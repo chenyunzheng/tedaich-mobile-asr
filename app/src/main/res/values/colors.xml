@@ -8,5 +8,5 @@
     <color name="app_background">#FFFFFF</color>
     <color name="app_gray_background">#ACACAC</color>
 
-    <color name="translucent_background">#75000000</color>
+    <color name="translucent_background">#25000000</color>
 </resources>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/audio_share"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="@dimen/recorder_item_more_btn_width"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/spacing_normal"
+        android:contentDescription="@null"
+        android:drawableTop="@drawable/ic_send"
+        android:text="@string/record_more_share"
+        android:textColor="@color/colorPrimary" />
+
+    <Button
+        android:id="@+id/audio_rename"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="@dimen/recorder_item_more_btn_width"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:contentDescription="@null"
+        android:drawableTop="@drawable/ic_rename"
+        android:text="@string/record_more_rename"
+        android:textColor="@color/colorPrimary" />
+
+    <Button
+        android:id="@+id/audio_delete"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="@dimen/recorder_item_more_btn_width"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/spacing_normal"
+        android:contentDescription="@null"
+        android:drawableTop="@drawable/ic_delete_forever"
+        android:text="@string/record_more_delete"
+        android:textColor="@color/colorPrimary" />
+
+</RelativeLayout>

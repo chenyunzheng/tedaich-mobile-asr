@@ -33,6 +33,8 @@
     <dimen name="btn_transfer_width">88dp</dimen>
     <dimen name="btn_more_width">60dp</dimen>
 
+    <dimen name="recorder_item_more_btn_width">120dp</dimen>
+
     <dimen name="user_back_image_height">200dp</dimen>
     <dimen name="user_front_image_size">120dp</dimen>
 

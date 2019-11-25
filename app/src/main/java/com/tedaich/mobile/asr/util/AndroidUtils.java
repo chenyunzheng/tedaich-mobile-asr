@@ -34,6 +34,16 @@ public class AndroidUtils {
     }
 
     /**
+     * format date into yyyy-MM-dd HH:mm:ss
+     * @param date
+     * @return
+     */
+    public static String formatDateWithoutMillisec(Date date){
+        String dateStr = formatDate(date);
+        return dateStr.substring(0, dateStr.lastIndexOf("."));
+    }
+
+    /**
      * convert short to byte array
      * @param value
      * @return
@@ -87,6 +97,22 @@ public class AndroidUtils {
 
     public static int convertPxToMills(long px, float pxPerSecond) {
         return (int) (1000 * px / pxPerSecond);
+    }
+
+    /**
+     * get screen width
+     * @return
+     */
+    public static int screenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+    /**
+     * get screen height
+     * @return
+     */
+    public static int screenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
     public static void addButtonIcon(Button button, Integer iconDrawable, Integer iconColor, String text){

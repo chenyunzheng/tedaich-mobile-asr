@@ -212,44 +212,69 @@ public class RecorderFragment extends Fragment {
     }
 
     private void handleRecordSave(View view) {
-        recordAudioTask.getIsRecording().set(false);
+        final boolean preIsRecording = isRecording;
+        if (isRecording){
+            recordAudioTask.getIsRecording().set(false);
+            iBtnRecorder.setImageDrawable(getResources().getDrawable(R.drawable.btn_circle_record));
+            isRecording = false;
+        }
         String title = getResources().getString(R.string.app_name);
         String message = getResources().getString(R.string.default_audio_save_alert_message);
-        new AlertDialog.Builder(this.getContext())
+        AlertDialog alertDialog = new AlertDialog.Builder(this.getContext())
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton(R.string.default_dialog_positive_text,(dialog, which) -> {
+                .setPositiveButton(R.string.default_dialog_positive_text, (dialog, which) -> {
                     recordAudioTask.getIsSave().set(true);
                     timerAudioService.stop();
                     requireNewRecordTask = false;
-                    iBtnRecorder.setImageDrawable(getResources().getDrawable(R.drawable.btn_circle_record));
+                    isRecording = false;
                     recorderTimer.setText(R.string.recorder_timer);
                     audioWaveLinearLayout.setVisibility(View.INVISIBLE);
                     iBtnDelete.setVisibility(View.INVISIBLE);
                     iBtnSave.setVisibility(View.INVISIBLE);
                 })
                 .setNegativeButton(R.string.default_dialog_negative_text, (dialog, which) -> {
-                    recordAudioTask.getIsRecording().set(true);
-                }).create().show();
+                    if (preIsRecording) {
+                        recordAudioTask.getIsRecording().set(true);
+                        iBtnRecorder.setImageDrawable(getResources().getDrawable(R.drawable.btn_circle_pause));
+                        isRecording = true;
+                    }
+                }).create();
+        alertDialog.setCancelable(false);
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
     }
 
     private void handleRecordDelete(View view) {
-        recordAudioTask.getIsRecording().set(false);
+        final boolean preIsRecording = isRecording;
+        if (isRecording){
+            recordAudioTask.getIsRecording().set(false);
+            iBtnRecorder.setImageDrawable(getResources().getDrawable(R.drawable.btn_circle_record));
+            isRecording = false;
+        }
         String title = getResources().getString(R.string.app_name);
         String message = getResources().getString(R.string.default_audio_delete_alert_message);
-        new AlertDialog.Builder(this.getContext())
+        AlertDialog alertDialog = new AlertDialog.Builder(this.getContext())
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton(R.string.default_dialog_positive_text,(dialog, which) -> {
+                .setPositiveButton(R.string.default_dialog_positive_text, (dialog, which) -> {
                     recordAudioTask.getIsDelete().set(true);
                     timerAudioService.stop();
                     requireNewRecordTask = false;
+                    isRecording = false;
                     audioWaveLinearLayout.setVisibility(View.INVISIBLE);
                     iBtnDelete.setVisibility(View.INVISIBLE);
                     iBtnSave.setVisibility(View.INVISIBLE);
                 })
                 .setNegativeButton(R.string.default_dialog_negative_text, (dialog, which) -> {
-                    recordAudioTask.getIsRecording().set(true);
-                }).create().show();
+                    if (preIsRecording) {
+                        recordAudioTask.getIsRecording().set(true);
+                        iBtnRecorder.setImageDrawable(getResources().getDrawable(R.drawable.btn_circle_pause));
+                        isRecording = true;
+                    }
+                }).create();
+        alertDialog.setCancelable(false);
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
     }
 }

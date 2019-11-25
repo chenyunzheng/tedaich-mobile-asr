@@ -99,8 +99,8 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
             File wavFile = new File(wavAudioPath);
             String name = resources.getString(R.string.default_audio_name);
             String fileName = wavFile.getName();
-            long duration = AudioUtils.getAudioDuration(wavFile);
-            float fileSize = (float)wavFile.length() / 1024;
+            long duration = AudioUtils.getAudioDuration(wavFile) / 1000;//milliseconds
+            float fileSize = (float)wavFile.length() / 1024;//KB
             String storePath = wavFile.getParent();
             //add audio metadata into db
             long gUserId = sharedPreferences.getLong("G_USER_ID", -1);
