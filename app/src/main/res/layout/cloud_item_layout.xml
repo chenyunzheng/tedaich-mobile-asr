@@ -32,7 +32,7 @@
             android:textSize="12sp" />
 
         <Button
-            android:id="@+id/audio_transfer_text"
+            android:id="@+id/audio_cloud_transfer_text"
             android:layout_width="@dimen/btn_transfer_width"
             android:layout_height="@dimen/btn_tiny_size"
             android:layout_centerInParent="true"

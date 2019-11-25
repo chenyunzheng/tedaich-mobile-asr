@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -115,12 +116,15 @@ public class RecorderFragment extends Fragment {
 
         fixedListRecyclerView.setHasFixedSize(true);
         fixedListRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(fragmentActivity, DividerItemDecoration.VERTICAL);
+        itemDecoration.setDrawable(getResources().getDrawable(R.drawable.recyclerview_divider));
+        fixedListRecyclerView.addItemDecoration(itemDecoration);
         int userId = (int)sharedPreferences.getLong("CURRENT_USER_ID", -1);
         recorderViewModel.getAudioList(userId, getResources().getInteger(R.integer.recycler_view_fixed_item_count)).observe(this, audioList -> {
             if (recorderAudioItemAdapter != null){
                 recorderAudioItemAdapter.release();
             }
-            recorderAudioItemAdapter = new RecorderAudioItemAdapter(audioList);
+            recorderAudioItemAdapter = new RecorderAudioItemAdapter(audioList, daoSession);
             fixedListRecyclerView.setAdapter(recorderAudioItemAdapter);
         });
         recBufSize = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT);
@@ -159,6 +163,7 @@ public class RecorderFragment extends Fragment {
                         List<Audio> audioList = recorderAudioItemAdapter.getAudioList();
                         audioList.add(0, audio);
                         recorderAudioItemAdapter.notifyItemInserted(0);
+                        recorderAudioItemAdapter.notifyItemRangeChanged(0, audioList.size());
                     }
                 });
                 if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED){

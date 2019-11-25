@@ -7,5 +7,9 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <style name="DialogEditText" parent="Widget.AppCompat.EditText">
+        <item name="colorControlNormal">@color/dialog_edit_text_bottom_line</item>
+        <item name="colorControlActivated">@color/dialog_edit_text_bottom_line</item>
+    </style>
 
 </resources>

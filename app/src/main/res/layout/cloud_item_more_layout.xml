@@ -7,7 +7,7 @@
     android:paddingBottom="@dimen/spacing_super_narrow">
 
     <Button
-        android:id="@+id/audio_share"
+        android:id="@+id/cloud_sync"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="@dimen/recorder_item_more_btn_width"
         android:layout_height="wrap_content"
@@ -15,12 +15,12 @@
         android:layout_marginStart="@dimen/spacing_normal"
         android:background="@color/audio_item_more_item_background"
         android:contentDescription="@null"
-        android:drawableTop="@drawable/ic_send"
-        android:text="@string/record_more_share"
+        android:drawableTop="@drawable/ic_cloud_sync"
+        android:text="@string/cloud_more_sync"
         android:textColor="@color/colorPrimary" />
 
     <Button
-        android:id="@+id/audio_rename"
+        android:id="@+id/cloud_rename"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="@dimen/recorder_item_more_btn_width"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         android:textColor="@color/colorPrimary" />
 
     <Button
-        android:id="@+id/audio_delete"
+        android:id="@+id/cloud_delete"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="@dimen/recorder_item_more_btn_width"
         android:layout_height="wrap_content"

@@ -13,6 +13,7 @@
     <dimen name="spacing_normal">16dp</dimen>
     <dimen name="spacing_narrow">12dp</dimen>
     <dimen name="spacing_extra_narrow">10dp</dimen>
+    <dimen name="spacing_super_narrow">6dp</dimen>
 
     <dimen name="btn_super_size">80dp</dimen>
     <dimen name="btn_extra_large_size">72dp</dimen>

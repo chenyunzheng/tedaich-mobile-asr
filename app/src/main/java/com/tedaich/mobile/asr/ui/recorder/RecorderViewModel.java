@@ -25,7 +25,10 @@ public class RecorderViewModel extends ViewModel {
     public LiveData<List<Audio>> getAudioList(int userId, int count) {
         List<Audio> audioList = new ArrayList<>();
         if (daoSession != null){
-            QueryBuilder<Audio> queryBuilder = daoSession.queryBuilder(Audio.class).where(AudioDao.Properties.UserId.eq(userId)).limit(count);
+            QueryBuilder<Audio> queryBuilder = daoSession.queryBuilder(Audio.class)
+                    .where(AudioDao.Properties.UserId.eq(userId))
+                    .limit(count)
+                    .orderDesc(AudioDao.Properties.RecordTime);
             audioList = queryBuilder.list();
         }
         mAudioList.setValue(audioList);

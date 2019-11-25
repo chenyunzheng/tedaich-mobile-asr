@@ -1,5 +1,7 @@
 package com.tedaich.mobile.asr.ui.cloud;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,29 +17,54 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tedaich.mobile.asr.App;
 import com.tedaich.mobile.asr.R;
+import com.tedaich.mobile.asr.dao.DaoSession;
 import com.tedaich.mobile.asr.ui.cloud.adapter.CloudAudioItemAdapter;
+import com.tedaich.mobile.asr.util.Constants;
 
 public class CloudFragment extends Fragment {
 
+    private FragmentActivity fragmentActivity;
     private CloudViewModel cloudViewModel;
+    private SharedPreferences sharedPreferences;
 
     private RecyclerView audioRecyclerView;
+    private CloudAudioItemAdapter cloudAudioItemAdapter;
+    private DaoSession daoSession;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        fragmentActivity = (FragmentActivity) context;
+        sharedPreferences = context.getSharedPreferences(Constants.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        daoSession = ((App) fragmentActivity.getApplication()).getDaoSession();
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         cloudViewModel = ViewModelProviders.of(this).get(CloudViewModel.class);
+        cloudViewModel.setDaoSession(daoSession);
+
         View root = inflater.inflate(R.layout.fragment_cloud, container, false);
         audioRecyclerView = root.findViewById(R.id.audio_recycler_view);
         audioRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        audioRecyclerView.addItemDecoration(new DividerItemDecoration(fragmentActivity, DividerItemDecoration.VERTICAL));
         audioRecyclerView.setLayoutManager(layoutManager);
-        cloudViewModel.getAudioList().observe(this, audio -> {
-            CloudAudioItemAdapter adapter = new CloudAudioItemAdapter(audio);
-            audioRecyclerView.setAdapter(adapter);
+
+        int userId = (int)sharedPreferences.getLong("CURRENT_USER_ID", -1);
+        cloudViewModel.getAudioList(userId).observe(this, audio -> {
+            if (cloudAudioItemAdapter != null){
+                cloudAudioItemAdapter.release();
+            }
+            cloudAudioItemAdapter = new CloudAudioItemAdapter(audio, daoSession, sharedPreferences);
+            audioRecyclerView.setAdapter(cloudAudioItemAdapter);
         });
         return root;
     }

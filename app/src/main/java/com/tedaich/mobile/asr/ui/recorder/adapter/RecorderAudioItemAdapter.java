@@ -2,7 +2,10 @@ package com.tedaich.mobile.asr.ui.recorder.adapter;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.text.Editable;
+import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -20,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import com.tedaich.mobile.asr.R;
+import com.tedaich.mobile.asr.dao.DaoSession;
 import com.tedaich.mobile.asr.model.Audio;
 import com.tedaich.mobile.asr.util.AndroidUtils;
 import com.tedaich.mobile.asr.util.AudioUtils;
@@ -57,13 +62,15 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
 
     private Resources resources;
     private List<Audio> audioList;
+    protected DaoSession daoSession;
     private View preItemView;
 
     private boolean isPlaying = false;
     private AudioPlayer[] audioPlayers;
 
-    public RecorderAudioItemAdapter(List<Audio> audioList){
+    public RecorderAudioItemAdapter(List<Audio> audioList, DaoSession daoSession){
         this.audioList = audioList;
+        this.daoSession = daoSession;
         if (audioList != null){
             this.audioPlayers = new AudioPlayer[audioList.size()];
             for (int i = 0; i < this.audioPlayers.length; i++) {
@@ -104,7 +111,7 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
         AudioPlayer audioPlayer = this.audioPlayers[position];
 
         holder.moreBtn.setOnClickListener(view -> {
-            showDialog(view.getContext(), holder);
+            showDialog(view.getContext(), holder, position, audioList);
         });
         holder.audioPlayerBtn.setOnClickListener(view -> {
             ImageButton audioPlayerBtn = (ImageButton)view;
@@ -166,10 +173,7 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
                 audioPlayerLayout.setVisibility(View.GONE);
 
             }
-
-
         });
-
     }
 
     @Override
@@ -187,7 +191,7 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
         }
     }
 
-    private void showDialog(Context context, AudioItemViewHolder holder) {
+    private void showDialog(Context context, AudioItemViewHolder holder, int position, List<Audio> audioList) {
         View view = LayoutInflater.from(context).inflate(R.layout.audio_item_more_layout,null,false);
         final AlertDialog moreDialog = new AlertDialog.Builder(context).setView(view).create();
         Button shareBtn = view.findViewById(R.id.audio_share);
@@ -195,13 +199,46 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
         Button deleteBtn = view.findViewById(R.id.audio_delete);
 
         shareBtn.setOnClickListener(v -> {
+            moreDialog.dismiss();
             Toast.makeText(context,"in developing through bluetooth, email, etc", Toast.LENGTH_SHORT).show();
         });
         renameBtn.setOnClickListener(v -> {
-            Toast.makeText(context,"renameBtn", Toast.LENGTH_SHORT).show();
+            moreDialog.dismiss();
+            View renameView = LayoutInflater.from(context).inflate(R.layout.audio_item_rename_dialog, null, false);
+            String title = v.getResources().getString(R.string.audio_item_rename_dialog_title);
+            AlertDialog renameDialog = new AlertDialog.Builder(context)
+                    .setTitle(Html.fromHtml("<font color='#2196F3'>" + title + "</font>"))
+                    .setView(renameView)
+                    .setPositiveButton(R.string.default_dialog_positive_text, (dialog, which) -> {
+                        EditText itemRename = renameView.findViewById(R.id.item_rename);
+                        Editable renameText = itemRename.getText();
+                        if (renameText != null && !"".equals(renameText.toString().trim())){
+                            if (audioList != null){
+                                Audio audio = audioList.get(position);
+                                audio.setName(renameText.toString().trim());
+                                notifyItemChanged(position);
+                                //update audio table
+                                daoSession.getAudioDao().update(audio);
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.default_dialog_negative_text, (dialog, which) -> {
+                        // nothing
+                    }).create();
+            renameDialog.setCanceledOnTouchOutside(false);
+            renameDialog.show();
+            renameDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(v.getResources().getColor(R.color.colorPrimary));
+            renameDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(v.getResources().getColor(R.color.colorPrimary));
         });
         deleteBtn.setOnClickListener(v -> {
-            Toast.makeText(context,"deleteBtn", Toast.LENGTH_SHORT).show();
+            moreDialog.dismiss();
+            if (audioList != null){
+                Audio audio = audioList.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, audioList.size() - position);
+                //delete from audio table
+                daoSession.getAudioDao().deleteByKey(audio.getId());
+            }
         });
 
         moreDialog.show();
@@ -209,11 +246,11 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
         if (dialogWindow != null){
             dialogWindow.setGravity(Gravity.BOTTOM);
             dialogWindow.getDecorView().setPadding(0, 0, 0, 0);
-//            dialogWindow.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            dialogWindow.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
             WindowManager.LayoutParams lp = dialogWindow.getAttributes();
             lp.width = WindowManager.LayoutParams.MATCH_PARENT;
             lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-//            lp.dimAmount = 0.5f;
+            lp.dimAmount = 0.7f;
             dialogWindow.setBackgroundDrawable(null);
             dialogWindow.setAttributes(lp);
         }
