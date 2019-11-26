@@ -3,6 +3,7 @@ package com.tedaich.mobile.asr.model;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.NotNull;
 
 import java.util.Date;
@@ -18,6 +19,12 @@ public class AudioText {
     private String text;
     @NotNull
     private Date createTime;
+
+    @Keep
+    public AudioText(Long audioId, int type, @NotNull String text,
+                     @NotNull Date createTime) {
+        this(null, audioId, type, text, createTime);
+    }
 
     @Generated(hash = 1602339964)
     public AudioText(Long id, Long audioId, int type, @NotNull String text,

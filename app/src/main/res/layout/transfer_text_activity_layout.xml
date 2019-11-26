@@ -60,11 +60,11 @@
 
         <Button
             android:id="@+id/btn_user_modify"
+            style="@style/btn_blue_background_style"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_normal"
             android:layout_weight="1"
-            android:background="@color/colorPrimary"
             android:text="@string/transfer_text_user_modify"
             android:textAlignment="center"
             android:textColor="@color/app_background"
@@ -95,37 +95,42 @@
             android:layout_height="@dimen/cloud_transfer_text_display_height"
             android:layout_marginStart="@dimen/spacing_narrow"
             android:layout_marginEnd="@dimen/spacing_narrow"
-            android:background="@drawable/edit_bg_border_line"
+            android:background="@drawable/edit_white_bg_border_line"
             android:ems="10"
             android:gravity="start|top"
             android:inputType="textMultiLine" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/btn_tiny_size"
             android:layout_marginStart="@dimen/spacing_narrow"
+            android:layout_marginTop="@dimen/spacing_narrow"
             android:layout_marginEnd="@dimen/spacing_narrow">
 
             <Button
-                android:id="@+id/ibtn_cancel"
+                android:id="@+id/btn_cancel"
+                style="@style/btn_blue_background_style"
                 android:layout_width="@dimen/local_user_input_btn_width"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="65dp"
-                android:drawableStart="@drawable/ic_clear"
+                android:drawableStart="@drawable/ic_clear_white_tint"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:text="@string/local_user_input_btn_cancel"
-                android:textColor="@color/colorPrimary"
                 android:textSize="18sp" />
 
             <Button
-                android:id="@+id/ibtn_save"
+                android:id="@+id/btn_save"
+                style="@style/btn_blue_background_style"
                 android:layout_width="@dimen/local_user_input_btn_width"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="65dp"
-                android:drawableStart="@drawable/ic_done"
+                android:drawableStart="@drawable/ic_done_white_tint"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
                 android:text="@string/local_user_input_btn_save"
-                android:textColor="@color/colorPrimary"
                 android:textSize="18sp" />
 
         </RelativeLayout>

@@ -36,7 +36,7 @@
 
     <dimen name="recorder_item_more_btn_width">120dp</dimen>
 
-    <dimen name="cloud_transfer_text_display_height">230dp</dimen>
+    <dimen name="cloud_transfer_text_display_height">200dp</dimen>
     <dimen name="local_user_input_btn_width">100dp</dimen>
 
     <dimen name="user_back_image_height">200dp</dimen>

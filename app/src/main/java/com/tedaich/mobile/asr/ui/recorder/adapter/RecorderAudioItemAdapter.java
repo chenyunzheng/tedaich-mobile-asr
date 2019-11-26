@@ -48,6 +48,7 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
         String audioFilePath;
         boolean audioOnCloud;
         int audioStatus;
+        long audioUserId;
 
         public AudioItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -57,6 +58,18 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
             moreBtn = itemView.findViewById(R.id.audio_item_more);
             audioPlayerBtn = itemView.findViewById(R.id.btn_audio_play);
             audioPlayProgress = itemView.findViewById(R.id.audio_play_progress);
+        }
+
+        public long getAudioId() {
+            return audioId;
+        }
+
+        public long getAudioUserId() {
+            return audioUserId;
+        }
+
+        public String getAudioFilePath() {
+            return audioFilePath;
         }
     }
 
@@ -96,9 +109,10 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
         holder.audioDateTime.setText(AndroidUtils.formatDateWithoutMillisec(audio.getRecordTime()));
         holder.audioDuration.setText(AudioUtils.getTimerValue(audio.getDuration()));
         holder.audioFilePath = audio.getStorePath() + File.separatorChar + audio.getFileName();
-//        holder.audioId = audio.getId();
+        holder.audioId = audio.getId();
         holder.audioOnCloud = audio.getOnCloud();
         holder.audioStatus = audio.getStatus();
+        holder.audioUserId = audio.getUserId();
         float seekBarScale = holder.audioPlayProgress.getMax() / (float)audio.getDuration();
         if (position >= this.audioPlayers.length){
             AudioPlayer[] _audioPlayers = new AudioPlayer[position+1];

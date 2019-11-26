@@ -11,4 +11,12 @@ public class CloudUtil {
     public static void deleteFile(long gUserId, long audioId, boolean logicDel) {
 
     }
+
+    public static void addUserInputTransferText(long gUserId, long audioId, String text) {
+
+    }
+
+    public static String getLatestTransferText(long gUserId, long audioId) {
+        return "hello world";
+    }
 }

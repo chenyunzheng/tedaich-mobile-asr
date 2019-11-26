@@ -22,12 +22,18 @@ import androidx.fragment.app.Fragment;
 
 import com.tedaich.mobile.asr.R;
 import com.tedaich.mobile.asr.activity.TransferTextActivity;
+import com.tedaich.mobile.asr.dao.AudioTextDao;
 import com.tedaich.mobile.asr.dao.DaoSession;
 import com.tedaich.mobile.asr.model.Audio;
+import com.tedaich.mobile.asr.model.AudioText;
 import com.tedaich.mobile.asr.ui.recorder.adapter.RecorderAudioItemAdapter;
 import com.tedaich.mobile.asr.util.CloudUtil;
 import com.tedaich.mobile.asr.util.Constants;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+
+import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 public class CloudAudioItemAdapter extends RecorderAudioItemAdapter {
@@ -63,7 +69,15 @@ public class CloudAudioItemAdapter extends RecorderAudioItemAdapter {
             Toast.makeText(v.getContext(), "cloudUploadBtn", Toast.LENGTH_SHORT).show();
         });
         cloudTransferTextBtn.setOnClickListener(v -> {
+            List<Audio> audioList = getAudioList();
+            Audio audio = audioList.get(position);
             Intent intent = new Intent(v.getContext(), TransferTextActivity.class);
+            intent.putExtra("audio_id", audio.getId());
+            intent.putExtra("audio_name", audio.getName());
+            QueryBuilder<AudioText> audioTextQueryBuilder = daoSession.queryBuilder(AudioText.class).where(AudioTextDao.Properties.AudioId.eq(audio.getId()),
+                    AudioTextDao.Properties.Type.eq(0)).orderDesc(AudioTextDao.Properties.CreateTime);
+            List<AudioText> audioTextList = audioTextQueryBuilder.list();
+            intent.putExtra("audio_to_text", audioTextList.size() > 0 ? audioTextList.get(0).getText() : "");
             fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER_TEXT);
         });
         cloudMoreOptionBtn.setOnClickListener(v -> {
@@ -82,6 +96,14 @@ public class CloudAudioItemAdapter extends RecorderAudioItemAdapter {
         cloudSyncBtn.setOnClickListener(v -> {
             moreDialog.dismiss();
             Toast.makeText(context, "in developing and mainly sync the latest transfer text from cloud to local", Toast.LENGTH_SHORT).show();
+            long gUserId = sharedPreferences.getLong("G_USER_ID", -1);
+            if (gUserId != -1){
+                long audioId = holder.getAudioId();
+                String text = CloudUtil.getLatestTransferText(gUserId,audioId);
+                //update local db
+                AudioText audioText = new AudioText(audioId, 0, text, new Date());
+                daoSession.getAudioTextDao().insert(audioText);
+            }
         });
         cloudRenameBtn.setOnClickListener(v -> {
             moreDialog.dismiss();
@@ -123,12 +145,18 @@ public class CloudAudioItemAdapter extends RecorderAudioItemAdapter {
                 Audio audio = audioList.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, audioList.size() - position);
-                //delete from audio table + local audio file?
+                //delete from audio table + local audio file
                 daoSession.getAudioDao().deleteByKey(audio.getId());
+                File file = new File(holder.getAudioFilePath());
+                if (file.exists()){
+                    file.delete();
+                }
                 //delete from cloud audio table
                 long gUserId = sharedPreferences.getLong("G_USER_ID", -1);
                 if (gUserId != -1){
-                    CloudUtil.deleteFile(gUserId,audio.getId(),true);
+                    if (audio.getOnCloud()){
+                        CloudUtil.deleteFile(gUserId,audio.getId(),true);
+                    }
                 }
             }
         });

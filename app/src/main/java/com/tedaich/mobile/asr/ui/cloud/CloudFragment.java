@@ -116,7 +116,7 @@ public class CloudFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Constants.RESULT_OK){
             if (requestCode == Constants.REQUEST_CODE_TRANSFER_TEXT && data != null){
-                //
+                //nothing
             }
         }
     }

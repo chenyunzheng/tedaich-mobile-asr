@@ -11,5 +11,12 @@
         <item name="colorControlNormal">@color/dialog_edit_text_bottom_line</item>
         <item name="colorControlActivated">@color/dialog_edit_text_bottom_line</item>
     </style>
+    <style name="btn_blue_background_style">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:height">@dimen/btn_small_size</item>
+        <item name="android:background">@drawable/btn_blue_background</item>
+    </style>
 
 </resources>
