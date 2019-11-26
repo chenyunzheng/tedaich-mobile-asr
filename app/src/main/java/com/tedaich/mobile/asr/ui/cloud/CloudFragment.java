@@ -1,6 +1,7 @@
 package com.tedaich.mobile.asr.ui.cloud;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -63,7 +64,7 @@ public class CloudFragment extends Fragment {
             if (cloudAudioItemAdapter != null){
                 cloudAudioItemAdapter.release();
             }
-            cloudAudioItemAdapter = new CloudAudioItemAdapter(audio, daoSession, sharedPreferences);
+            cloudAudioItemAdapter = new CloudAudioItemAdapter(audio, daoSession, sharedPreferences, this);
             audioRecyclerView.setAdapter(cloudAudioItemAdapter);
         });
         return root;
@@ -108,5 +109,15 @@ public class CloudFragment extends Fragment {
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Constants.RESULT_OK){
+            if (requestCode == Constants.REQUEST_CODE_TRANSFER_TEXT && data != null){
+                //
+            }
+        }
     }
 }

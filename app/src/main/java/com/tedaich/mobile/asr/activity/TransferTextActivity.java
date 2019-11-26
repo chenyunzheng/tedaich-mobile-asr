@@ -14,5 +14,6 @@ public class TransferTextActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.transfer_text_activity_layout);
 
+
     }
 }

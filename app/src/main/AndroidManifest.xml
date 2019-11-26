@@ -31,6 +31,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tedaich.mobile.asr.MainActivity" />
         </activity>
+        <activity
+            android:name=".activity.TransferTextActivity"
+            android:label="@string/label_transfer_text_activity"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.tedaich.mobile.asr.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

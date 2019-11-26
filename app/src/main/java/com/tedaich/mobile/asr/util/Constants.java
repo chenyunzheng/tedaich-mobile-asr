@@ -6,6 +6,5 @@ public class Constants {
 
     public static final int RESULT_OK = 200;
     public static final int REQUEST_CODE_USER_LOGIN = 100;
-
-
+    public static final int REQUEST_CODE_TRANSFER_TEXT = 101;
 }

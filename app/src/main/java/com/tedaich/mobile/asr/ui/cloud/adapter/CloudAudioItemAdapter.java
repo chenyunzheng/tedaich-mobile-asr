@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.tedaich.mobile.asr.R;
 import com.tedaich.mobile.asr.activity.TransferTextActivity;
@@ -25,16 +26,20 @@ import com.tedaich.mobile.asr.dao.DaoSession;
 import com.tedaich.mobile.asr.model.Audio;
 import com.tedaich.mobile.asr.ui.recorder.adapter.RecorderAudioItemAdapter;
 import com.tedaich.mobile.asr.util.CloudUtil;
+import com.tedaich.mobile.asr.util.Constants;
 
 import java.util.List;
 
 public class CloudAudioItemAdapter extends RecorderAudioItemAdapter {
 
     private SharedPreferences sharedPreferences;
+    private Fragment fragment;
 
-    public CloudAudioItemAdapter(List<Audio> audioList, DaoSession daoSession, SharedPreferences sharedPreferences){
+    public CloudAudioItemAdapter(List<Audio> audioList, DaoSession daoSession,
+                                 SharedPreferences sharedPreferences, Fragment fragment){
         super(audioList, daoSession);
         this.sharedPreferences = sharedPreferences;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -59,7 +64,7 @@ public class CloudAudioItemAdapter extends RecorderAudioItemAdapter {
         });
         cloudTransferTextBtn.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), TransferTextActivity.class);
-//            v.getContext().startActivityForResult(intent, Constants.REQUEST_CODE_USER_LOGIN);
+            fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER_TEXT);
         });
         cloudMoreOptionBtn.setOnClickListener(v -> {
             showDialog(v.getContext(), holder, position, super.getAudioList());

@@ -34,12 +34,19 @@
     <string name="default_db_name">tedaich_asr.db</string>
 
     <string name="label_user_login_activity">用户登录/注册</string>
+    <string name="label_transfer_text_activity">云语音转换文本</string>
 
     <string name="record_more_share">分享</string>
     <string name="record_more_rename">重命名</string>
     <string name="record_more_delete">删除</string>
     <string name="cloud_more_sync">云同步</string>
+    <string name="cloud_transfer_text">云转换文本</string>
 
     <string name="audio_item_rename_dialog_title">请输入</string>
+    <string name="transfer_text_user_modify">更 正</string>
+    <string name="local_user_input">请输入更正文本</string>
+    <string name="local_user_input_btn_cancel">取消</string>
+    <string name="local_user_input_btn_save">上传</string>
+
 
 </resources>
