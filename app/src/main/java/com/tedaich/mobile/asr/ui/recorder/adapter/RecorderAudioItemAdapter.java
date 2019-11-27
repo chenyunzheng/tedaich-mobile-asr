@@ -64,12 +64,16 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
             return audioId;
         }
 
-        public long getAudioUserId() {
-            return audioUserId;
-        }
-
         public String getAudioFilePath() {
             return audioFilePath;
+        }
+
+        public boolean isAudioOnCloud() {
+            return audioOnCloud;
+        }
+
+        public long getAudioUserId() {
+            return audioUserId;
         }
     }
 

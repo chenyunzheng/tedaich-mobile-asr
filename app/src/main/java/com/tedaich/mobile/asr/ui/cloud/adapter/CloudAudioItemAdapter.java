@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.alibaba.fastjson.JSON;
 import com.tedaich.mobile.asr.R;
 import com.tedaich.mobile.asr.activity.TransferTextActivity;
 import com.tedaich.mobile.asr.dao.AudioTextDao;
@@ -62,11 +63,21 @@ public class CloudAudioItemAdapter extends RecorderAudioItemAdapter {
     public void onBindViewHolder(@NonNull AudioItemViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         Button cloudUploadBtn = holder.itemView.findViewById(R.id.audio_cloud_upload);
+        if (holder.isAudioOnCloud()){
+            cloudUploadBtn.setEnabled(false);
+        }
         Button cloudTransferTextBtn = holder.itemView.findViewById(R.id.audio_cloud_transfer_text);
         Button cloudMoreOptionBtn = holder.itemView.findViewById(R.id.cloud_item_more_option);
 
         cloudUploadBtn.setOnClickListener(v -> {
-            Toast.makeText(v.getContext(), "cloudUploadBtn", Toast.LENGTH_SHORT).show();
+            long gUserId = sharedPreferences.getLong("G_USER_ID", -1);
+            if (gUserId != -1){
+                List<Audio> audioList = getAudioList();
+                Audio audio = audioList.get(position);
+                CloudUtil.uploadFile(gUserId, JSON.toJSON(audio).toString(), holder.getAudioFilePath());
+            } else {
+                Toast.makeText(v.getContext(), "Login first (in developing)", Toast.LENGTH_SHORT).show();
+            }
         });
         cloudTransferTextBtn.setOnClickListener(v -> {
             List<Audio> audioList = getAudioList();
@@ -100,9 +111,21 @@ public class CloudAudioItemAdapter extends RecorderAudioItemAdapter {
             if (gUserId != -1){
                 long audioId = holder.getAudioId();
                 String text = CloudUtil.getLatestTransferText(gUserId,audioId);
-                //update local db
-                AudioText audioText = new AudioText(audioId, 0, text, new Date());
-                daoSession.getAudioTextDao().insert(audioText);
+                //compare with local transfer text
+                QueryBuilder<AudioText> audioTextQueryBuilder = daoSession.queryBuilder(AudioText.class).where(AudioTextDao.Properties.AudioId.eq(audioId),
+                        AudioTextDao.Properties.Type.eq(0)).orderDesc(AudioTextDao.Properties.CreateTime);
+                List<AudioText> audioTextList = audioTextQueryBuilder.list();
+                if (audioTextList.size() == 0){
+                    //update local db
+                    AudioText audioText = new AudioText(audioId, 0, text, new Date());
+                    daoSession.getAudioTextDao().insert(audioText);
+                } else {
+                    if (!text.equals(audioTextList.get(0).getText())){
+                        //update local db
+                        AudioText audioText = new AudioText(audioId, 0, text, new Date());
+                        daoSession.getAudioTextDao().insert(audioText);
+                    }
+                }
             }
         });
         cloudRenameBtn.setOnClickListener(v -> {

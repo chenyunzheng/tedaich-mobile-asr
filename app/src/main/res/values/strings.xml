@@ -48,5 +48,6 @@
     <string name="local_user_input_btn_cancel">取消</string>
     <string name="local_user_input_btn_save">上传</string>
 
+    <string name="warning_content_empty">输入内容不能为空</string>
 
 </resources>

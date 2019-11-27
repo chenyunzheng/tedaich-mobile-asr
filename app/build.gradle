@@ -3,7 +3,8 @@ apply plugin: 'org.greenrobot.greendao'
 
 ext.versions = [
         permissionsdispatcher : "4.6.0",
-        greendao : "3.2.2"
+        greendao : "3.2.2",
+        fastjson : "1.1.70.android"
 ]
 
 android {
@@ -52,4 +53,5 @@ dependencies {
     implementation "org.permissionsdispatcher:permissionsdispatcher:$versions.permissionsdispatcher"
     annotationProcessor "org.permissionsdispatcher:permissionsdispatcher-processor:$versions.permissionsdispatcher"
     implementation "org.greenrobot:greendao:$versions.greendao"
+    implementation "com.alibaba:fastjson:$versions.fastjson"
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -30,14 +29,31 @@
         android:layout_marginEnd="@dimen/spacing_narrow"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/cloud_transfer_text_label"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/small_height"
-            android:gravity="fill_vertical"
-            android:text="@string/cloud_transfer_text"
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/cloud_transfer_text_label"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/small_height"
+                android:layout_alignParentStart="true"
+                android:gravity="fill_vertical"
+                android:text="@string/cloud_transfer_text"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btn_transfer_text_sync"
+                style="@style/btn_blue_background_style"
+                android:layout_width="@dimen/btn_large_size"
+                android:layout_height="@dimen/tiny_height"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="0dp"
+                android:text="@string/cloud_more_sync"
+                android:textSize="12sp" />
+        </RelativeLayout>
 
         <EditText
             android:id="@+id/cloud_transfer_text"

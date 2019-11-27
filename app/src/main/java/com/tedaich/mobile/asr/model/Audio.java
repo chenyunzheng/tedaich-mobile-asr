@@ -1,5 +1,6 @@
 package com.tedaich.mobile.asr.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.tedaich.mobile.asr.dao.AudioDao;
 import com.tedaich.mobile.asr.dao.AudioTextDao;
 import com.tedaich.mobile.asr.dao.DaoSession;
@@ -37,6 +38,7 @@ public class Audio {
     private int status;
     private boolean onCloud;
     private String audioToText;
+    @JSONField(serialize = false)
     @ToMany(referencedJoinProperty = "audioId")
     private List<AudioText> audioTextList;
 

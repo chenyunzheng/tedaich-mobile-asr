@@ -29,6 +29,7 @@
     <dimen name="large_height">96dp</dimen>
     <dimen name="medium_height">64dp</dimen>
     <dimen name="small_height">32dp</dimen>
+    <dimen name="tiny_height">24dp</dimen>
 
     <dimen name="btn_upload_width">70dp</dimen>
     <dimen name="btn_transfer_width">88dp</dimen>

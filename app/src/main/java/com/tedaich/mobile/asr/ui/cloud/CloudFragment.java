@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -91,22 +90,23 @@ public class CloudFragment extends Fragment {
         searchView.setQueryHint(resources.getString(R.string.search_hint));
         searchView.setIconifiedByDefault(resources.getBoolean(R.bool.search_default_iconified));
         searchView.setIconified(resources.getBoolean(R.bool.search_default_iconified));
-        searchView.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        int userId = (int)sharedPreferences.getLong("CURRENT_USER_ID", -1);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(getContext(), query, Toast.LENGTH_SHORT).show();
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Toast.makeText(getContext(), newText, Toast.LENGTH_SHORT).show();
-                //thread pool
-
-                //handler to update UI
-                return false;
+                if (newText == null || "".equals(newText.trim())){
+                    return false;
+                }
+                cloudViewModel.executeSearch(newText, userId);
+                return true;
             }
         });
     }

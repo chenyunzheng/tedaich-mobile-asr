@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Process;
 import android.text.Html;
 import android.text.Spanned;
 import android.widget.Button;
@@ -14,6 +15,10 @@ import androidx.core.graphics.drawable.DrawableCompat;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AndroidUtils {
 
@@ -115,6 +120,13 @@ public class AndroidUtils {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
+    /**
+     * add icon on button
+     * @param button
+     * @param iconDrawable
+     * @param iconColor
+     * @param text
+     */
     public static void addButtonIcon(Button button, Integer iconDrawable, Integer iconColor, String text){
         final Resources resources = button.getResources();
         Html.ImageGetter imgGetter = source -> {
@@ -129,6 +141,28 @@ public class AndroidUtils {
         };
         Spanned span = Html.fromHtml("<img src=\"" + iconDrawable + "\"/>" + text, imgGetter, null);
         button.setText(span);
+    }
+
+    /**
+     * see com.android.internal.util.ConcurrentUtils#newFixedThreadPool()
+     */
+    public static ExecutorService newFixedThreadPool(int nThreads, String poolName,
+                                                     int linuxThreadPriority) {
+        return Executors.newFixedThreadPool(nThreads,
+                new ThreadFactory() {
+                    private final AtomicInteger threadNum = new AtomicInteger(0);
+
+                    @Override
+                    public Thread newThread(final Runnable r) {
+                        return new Thread(poolName + threadNum.incrementAndGet()) {
+                            @Override
+                            public void run() {
+                                Process.setThreadPriority(linuxThreadPriority);
+                                r.run();
+                            }
+                        };
+                    }
+                });
     }
 
     /**
