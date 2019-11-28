@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.media.AudioRecord;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.tedaich.mobile.asr.R;
 import com.tedaich.mobile.asr.dao.DaoSession;
@@ -90,7 +89,6 @@ public class RecordAudioTask extends AsyncTask<Object, List, Object> {
 
     @Override
     protected void onPreExecute() {
-        Toast.makeText(audioWaveView.get().getContext(), "Start Recording", Toast.LENGTH_SHORT).show();
         super.onPreExecute();
         final Resources resources = audioWaveView.get().getResources();
         final SharedPreferences sharedPreferences = audioWaveView.get().getContext().getSharedPreferences(Constants.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);

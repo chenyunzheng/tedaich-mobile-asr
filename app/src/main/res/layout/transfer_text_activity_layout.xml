@@ -62,7 +62,8 @@
             android:background="@drawable/edit_bg_border_line"
             android:ems="10"
             android:gravity="start|top"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -114,7 +115,8 @@
             android:background="@drawable/edit_white_bg_border_line"
             android:ems="10"
             android:gravity="start|top"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            android:textSize="14sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"

@@ -12,7 +12,6 @@ import android.widget.Button;
 
 import androidx.core.graphics.drawable.DrawableCompat;
 
-import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
@@ -54,9 +53,11 @@ public class AndroidUtils {
      * @return
      */
     public static byte[] convertShortToByteArray(short value){
-        ByteBuffer buffer = ByteBuffer.allocate(2);
-        buffer.putShort(value);
-        return buffer.array();
+        //高低位交换
+        byte[] bytes = new byte[2];
+        bytes[0] = (byte) (value & 0x00FF);
+        bytes[1] = (byte) ((value >> 8) & 0x00FF);
+        return bytes;
     }
 
     /**

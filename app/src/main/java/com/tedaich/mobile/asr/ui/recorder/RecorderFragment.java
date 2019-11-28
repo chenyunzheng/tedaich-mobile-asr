@@ -231,7 +231,7 @@ public class RecorderFragment extends Fragment {
                 .setPositiveButton(R.string.default_dialog_positive_text, (dialog, which) -> {
                     recordAudioTask.getIsSave().set(true);
                     timerAudioService.stop();
-                    requireNewRecordTask = false;
+                    requireNewRecordTask = true;
                     isRecording = false;
                     recorderTimer.setText(R.string.recorder_timer);
                     audioWaveLinearLayout.setVisibility(View.INVISIBLE);
@@ -265,8 +265,9 @@ public class RecorderFragment extends Fragment {
                 .setPositiveButton(R.string.default_dialog_positive_text, (dialog, which) -> {
                     recordAudioTask.getIsDelete().set(true);
                     timerAudioService.stop();
-                    requireNewRecordTask = false;
+                    requireNewRecordTask = true;
                     isRecording = false;
+                    recorderTimer.setText(R.string.recorder_timer);
                     audioWaveLinearLayout.setVisibility(View.INVISIBLE);
                     iBtnDelete.setVisibility(View.INVISIBLE);
                     iBtnSave.setVisibility(View.INVISIBLE);

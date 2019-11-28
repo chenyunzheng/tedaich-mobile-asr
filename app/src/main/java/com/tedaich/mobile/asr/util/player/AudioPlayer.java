@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.tedaich.mobile.asr.service.ProgressAudioService;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class AudioPlayer implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
@@ -45,14 +46,13 @@ public class AudioPlayer implements MediaPlayer.OnPreparedListener, MediaPlayer.
         if (status != AudioPlayer.INITIALIZED){
             Log.i(LOG_TAG, "initialize audio player first");
         } else {
-            try {
-                if (mediaPlayer != null){
-                    mediaPlayer.setDataSource(audioPath);
+            if (mediaPlayer != null && !mediaPlayer.isPlaying()){
+                try (FileInputStream fis = new FileInputStream(audioPath)){
+                    mediaPlayer.setDataSource(fis.getFD());
                     mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                     mediaPlayer.setOnPreparedListener(this);
+                    mediaPlayer.setOnCompletionListener(this);
                     mediaPlayer.prepareAsync();
-
-//                    mediaPlayer.setOnCompletionListener(this);
                     if (progressAudioService != null){
                         progressAudioService.setProgressCallback((progressInMilliSec) -> {
                             if (playerCallback != null){
@@ -60,28 +60,39 @@ public class AudioPlayer implements MediaPlayer.OnPreparedListener, MediaPlayer.
                             }
                         });
                     }
-                    this.status = AudioPlayer.PREPARED;
+                } catch (IOException e) {
+                    Log.e(LOG_TAG, "read file error, audioPath = " + audioPath, e);
+                } catch (IllegalStateException e) {
+                    Log.e(LOG_TAG, "audio player called in an invalid state", e);
+                } catch (Exception e) {
+                    Log.e(LOG_TAG, "error in prepare()", e);
                 }
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "error in prepare()", e);
             }
         }
     }
 
     public void play(){
         if (mediaPlayer != null){
-            if (status == AudioPlayer.PREPARED || status == AudioPlayer.PAUSED){
-                mediaPlayer.start();
-                mediaPlayer.seekTo((int)seekPosInMilliSec);
-                if (progressAudioService != null){
-                    progressAudioService.start();
-                }
-                if (playerCallback != null){
-                    playerCallback.onStart();
-                }
+            if (mediaPlayer.isPlaying()) {
                 status = AudioPlayer.PLAYING;
+                return;
+            }
+            if (status == AudioPlayer.PREPARED || status == AudioPlayer.PAUSED){
+                try {
+                    mediaPlayer.start();
+                    mediaPlayer.seekTo((int)seekPosInMilliSec);
+                    if (progressAudioService != null){
+                        progressAudioService.start();
+                    }
+                    if (playerCallback != null){
+                        playerCallback.onStart();
+                    }
+                    status = AudioPlayer.PLAYING;
+                } catch (IllegalStateException e){
+                    Log.e(LOG_TAG, "error in play()", e);
+                }
             } else {
-                Log.i(LOG_TAG, "can't play without prepared status");
+                Log.i(LOG_TAG, "can't play without prepared/pause status");
             }
         }
     }
@@ -89,15 +100,19 @@ public class AudioPlayer implements MediaPlayer.OnPreparedListener, MediaPlayer.
     public void pause(){
         if (mediaPlayer != null){
             if (status == AudioPlayer.PLAYING && mediaPlayer.isPlaying()){
-                mediaPlayer.pause();
-                seekPosInMilliSec = mediaPlayer.getCurrentPosition();
-                if (progressAudioService != null){
-                    progressAudioService.pause();
+                try{
+                    mediaPlayer.pause();
+                    seekPosInMilliSec = mediaPlayer.getCurrentPosition();
+                    if (progressAudioService != null){
+                        progressAudioService.pause();
+                    }
+                    if (playerCallback != null){
+                        playerCallback.onPause();
+                    }
+                    status = AudioPlayer.PAUSED;
+                } catch (IllegalStateException e){
+                    Log.e(LOG_TAG, "error in pause()", e);
                 }
-                if (playerCallback != null){
-                    playerCallback.onPause();
-                }
-                status = AudioPlayer.PAUSED;
             } else {
                 Log.i(LOG_TAG, "can't pause without playing status");
             }
@@ -108,7 +123,11 @@ public class AudioPlayer implements MediaPlayer.OnPreparedListener, MediaPlayer.
         if (mediaPlayer != null){
             if (status == AudioPlayer.PLAYING && mediaPlayer.isPlaying()){
                 seekPosInMilliSec = milliSec;
-                mediaPlayer.seekTo((int) seekPosInMilliSec);
+                try {
+                    mediaPlayer.seekTo((int) seekPosInMilliSec);
+                } catch (IllegalStateException e){
+                    Log.e(LOG_TAG, "error state in seekTo()", e);
+                }
                 if (progressAudioService != null){
                     progressAudioService.setProgressInMilliSec(seekPosInMilliSec);
                 }
@@ -149,15 +168,20 @@ public class AudioPlayer implements MediaPlayer.OnPreparedListener, MediaPlayer.
             mediaPlayer.release();
             mediaPlayer = mp;
         }
-        mediaPlayer.setOnCompletionListener(this);
-        if (progressAudioService != null){
-            progressAudioService.setProgressCallback((progressInMilliSec) -> {
-                if (playerCallback != null){
-                    playerCallback.onProgress(progressInMilliSec);
-                }
-            });
+        status = AudioPlayer.PREPARED;
+        try {
+            mediaPlayer.start();
+            mediaPlayer.seekTo((int) seekPosInMilliSec);
+            if (progressAudioService != null){
+                progressAudioService.start();
+            }
+            if (playerCallback != null){
+                playerCallback.onStart();
+            }
+            status = AudioPlayer.PLAYING;
+        } catch (IllegalStateException e) {
+            Log.e(LOG_TAG, "error state in onPrepared()", e);
         }
-        this.status = AudioPlayer.PREPARED;
     }
 
     @Override
@@ -177,5 +201,4 @@ public class AudioPlayer implements MediaPlayer.OnPreparedListener, MediaPlayer.
         }
         status = AudioPlayer.COMPLETED;
     }
-
 }

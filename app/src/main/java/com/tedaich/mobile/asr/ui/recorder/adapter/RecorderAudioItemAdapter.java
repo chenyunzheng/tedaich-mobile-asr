@@ -49,6 +49,7 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
         boolean audioOnCloud;
         int audioStatus;
         long audioUserId;
+        boolean isPlaying = false;
 
         public AudioItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -77,12 +78,11 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
         }
     }
 
-    private Resources resources;
+    protected Resources resources;
     private List<Audio> audioList;
     protected DaoSession daoSession;
-    private View preItemView;
+    private AudioItemViewHolder preAudioItemViewHolder;
 
-    private boolean isPlaying = false;
     private AudioPlayer[] audioPlayers;
 
     public RecorderAudioItemAdapter(List<Audio> audioList, DaoSession daoSession){
@@ -133,7 +133,7 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
         });
         holder.audioPlayerBtn.setOnClickListener(view -> {
             ImageButton audioPlayerBtn = (ImageButton)view;
-            if (isPlaying){
+            if (holder.isPlaying){
                 audioPlayerBtn.setImageDrawable(resources.getDrawable(R.drawable.ic_play_circle_outline));
                 audioPlayer.pause();
             } else {
@@ -144,7 +144,7 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
                 }
                 audioPlayer.play();
             }
-            isPlaying = !isPlaying;
+            holder.isPlaying = !holder.isPlaying;
         });
         holder.audioPlayProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -166,7 +166,9 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
                 holder.audioPlayProgress.setProgress((int)(mills * seekBarScale));
             }
             @Override
-            public void onPause() { }
+            public void onPause() {
+                holder.audioPlayerBtn.setImageDrawable(resources.getDrawable(R.drawable.ic_play_circle_outline));
+            }
             @Override
             public void onSeek(long mills) {
                 holder.audioPlayProgress.setProgress((int)(mills * seekBarScale));
@@ -175,21 +177,28 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
             public void onComplete() {
                 holder.audioPlayerBtn.setImageDrawable(resources.getDrawable(R.drawable.ic_play_circle_outline));
                 holder.audioPlayProgress.setProgress(0);
-                isPlaying = false;
+                holder.isPlaying = false;
             }
         });
         holder.itemView.setOnClickListener(itemView -> {
-            if (preItemView != null && preItemView != itemView){
-                preItemView.findViewById(R.id.Audio_Player_LinearLayout).setVisibility(View.GONE);
+            if (preAudioItemViewHolder != null && preAudioItemViewHolder != holder){
+                preAudioItemViewHolder.itemView.findViewById(R.id.Audio_Player_LinearLayout).setVisibility(View.GONE);
+                AudioPlayer preAudioPlayer = audioPlayers[preAudioItemViewHolder.getLayoutPosition()];
+                if (preAudioPlayer != null && preAudioPlayer.getStatus() == AudioPlayer.PLAYING){
+                    preAudioPlayer.pause();
+                    preAudioItemViewHolder.isPlaying = false;
+                }
             }
-            preItemView = itemView;
+            preAudioItemViewHolder = holder;
             View audioPlayerLayout = itemView.findViewById(R.id.Audio_Player_LinearLayout);
             if (audioPlayerLayout.getVisibility() == View.GONE){
                 audioPlayerLayout.setVisibility(View.VISIBLE);
-                holder.audioPlayProgress.setProgress(0);
             } else {
                 audioPlayerLayout.setVisibility(View.GONE);
-
+                if (audioPlayer.getStatus() == AudioPlayer.PLAYING){
+                    audioPlayer.pause();
+                    holder.isPlaying = false;
+                }
             }
         });
     }
@@ -254,6 +263,7 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
                 Audio audio = audioList.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, audioList.size() - position);
+                preAudioItemViewHolder = null;
                 //delete from audio table
                 daoSession.getAudioDao().deleteByKey(audio.getId());
             }
@@ -273,6 +283,5 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
             dialogWindow.setAttributes(lp);
         }
     }
-
 
 }

@@ -77,7 +77,6 @@
             android:adjustViewBounds="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@null"
-            android:onClick="handleAudioPlayPause"
             android:scaleType="center"
             android:tint="#2196F3"
             app:srcCompat="@drawable/ic_play_circle_outline" />
