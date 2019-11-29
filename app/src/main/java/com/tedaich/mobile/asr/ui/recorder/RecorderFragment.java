@@ -156,7 +156,6 @@ public class RecorderFragment extends Fragment {
                 String audioPath = AudioUtils.getAudioDirectory() + File.separatorChar + defaultAudioName;
                 DaoSession daoSession = this.daoSession;
                 audioRecord = new AudioRecord(AUDIO_SOURCE, SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT, recBufSize);
-                System.out.println("========= audioRecord new instance");
                 recordAudioTask = new RecordAudioTask(audioRecord, recBufSize, audioWaveView, audioPath, daoSession);
                 recordAudioTask.setAudioSaveCompletedListener((audio) -> {
                     if (recorderAudioItemAdapter != null){

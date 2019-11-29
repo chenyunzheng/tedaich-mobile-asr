@@ -47,10 +47,15 @@ public class CloudViewModel extends ViewModel {
     public void executeSearch(String newText, int userId) {
         executorService.submit(() -> {
             if (daoSession != null){
-                QueryBuilder<Audio> audioQueryBuilder = daoSession.queryBuilder(Audio.class).where(AudioDao.Properties.UserId.eq(userId),
-                        AudioDao.Properties.Name.like("%" + newText + "%")).orderDesc(AudioDao.Properties.RecordTime);
-                List<Audio> audioList = audioQueryBuilder.list();
-                mAudioList.postValue(audioList);
+                QueryBuilder<Audio> audioQueryBuilder;
+                if ("".equals(newText)){
+                    audioQueryBuilder = daoSession.queryBuilder(Audio.class).where(AudioDao.Properties.UserId.eq(userId))
+                            .orderDesc(AudioDao.Properties.RecordTime);
+                } else {
+                    audioQueryBuilder = daoSession.queryBuilder(Audio.class).where(AudioDao.Properties.UserId.eq(userId),
+                            AudioDao.Properties.Name.like("%" + newText + "%")).orderDesc(AudioDao.Properties.RecordTime);
+                }
+                mAudioList.postValue(audioQueryBuilder.list());
             }
         });
     }

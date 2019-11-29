@@ -89,11 +89,11 @@ public class CloudFragment extends Fragment {
         Resources resources = getResources();
         searchView.setQueryHint(resources.getString(R.string.search_hint));
         searchView.setIconifiedByDefault(resources.getBoolean(R.bool.search_default_iconified));
-        searchView.setIconified(resources.getBoolean(R.bool.search_default_iconified));
+//        searchView.setIconified(resources.getBoolean(R.bool.search_iconified));
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.clearFocus();
 
         int userId = (int)sharedPreferences.getLong("CURRENT_USER_ID", -1);
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -102,7 +102,7 @@ public class CloudFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText == null || "".equals(newText.trim())){
+                if (newText == null){
                     return false;
                 }
                 cloudViewModel.executeSearch(newText, userId);

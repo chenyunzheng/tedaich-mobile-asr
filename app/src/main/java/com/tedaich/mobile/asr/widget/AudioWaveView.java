@@ -14,7 +14,7 @@ import com.tedaich.mobile.asr.R;
 
 public class AudioWaveView extends View {
 
-    private static final float factor = 1.0f;
+    private static final float factor = 2.0f;
 
     private Paint centerLinePaint;
     private Paint wavePaint;
@@ -91,8 +91,9 @@ public class AudioWaveView extends View {
             if (buf[i] == null){
                 continue;
             }
-            float y1 = centerLinePos - buf[i] * scaleY * factor;
-            float y2 = centerLinePos + buf[i] * scaleY * factor;
+            float distance = Math.min(Math.abs(buf[i] * scaleY * factor), centerLinePos - verticalHalfOffSet);
+            float y1 = centerLinePos - distance;
+            float y2 = centerLinePos + distance;
             float x = i / waveCountPerPixel + horizontalHalfOffSet;
             canvas.drawLine(x, y1, x, y2, wavePaint);
         }
