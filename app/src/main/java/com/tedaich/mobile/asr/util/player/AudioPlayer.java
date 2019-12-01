@@ -157,6 +157,10 @@ public class AudioPlayer implements MediaPlayer.OnPreparedListener, MediaPlayer.
         return status;
     }
 
+    public long getSeekPosInMilliSec() {
+        return seekPosInMilliSec;
+    }
+
     public void setPlayerCallback(PlayerCallback playerCallback){
         this.playerCallback = playerCallback;
     }

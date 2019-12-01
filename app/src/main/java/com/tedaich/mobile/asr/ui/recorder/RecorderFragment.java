@@ -164,10 +164,12 @@ public class RecorderFragment extends Fragment {
                         audioList.add(0, audio);
                         int size = audioList.size();
                         int limited = getResources().getInteger(R.integer.recycler_view_fixed_item_count);
+                        recorderAudioItemAdapter.adjustAudioPlayers(Constants.INSERT, 0);
                         recorderAudioItemAdapter.notifyItemInserted(0);
                         recorderAudioItemAdapter.notifyItemRangeChanged(0, size);
                         if (size > limited){
                             audioList.remove(size - 1);
+                            recorderAudioItemAdapter.adjustAudioPlayers(Constants.DELETE,size - 1);
                             recorderAudioItemAdapter.notifyItemRemoved(size - 1);
                             recorderAudioItemAdapter.notifyItemRangeChanged(size - 1, 1);
                             recorderAudioItemAdapter.release(size - 1);

@@ -170,6 +170,8 @@ public class CloudAudioItemAdapter extends RecorderAudioItemAdapter {
             moreDialog.dismiss();
             if (audioList != null){
                 Audio audio = audioList.remove(position);
+                adjustAudioPlayers(Constants.DELETE, position);
+                preAudioItemViewHolder = null;
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, audioList.size() - position);
                 //delete from audio table + local audio file

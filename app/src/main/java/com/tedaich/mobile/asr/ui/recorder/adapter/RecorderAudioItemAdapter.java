@@ -28,6 +28,7 @@ import com.tedaich.mobile.asr.dao.DaoSession;
 import com.tedaich.mobile.asr.model.Audio;
 import com.tedaich.mobile.asr.util.AndroidUtils;
 import com.tedaich.mobile.asr.util.AudioUtils;
+import com.tedaich.mobile.asr.util.Constants;
 import com.tedaich.mobile.asr.util.player.AudioPlayer;
 import com.tedaich.mobile.asr.util.player.PlayerCallback;
 
@@ -81,7 +82,7 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
     protected Resources resources;
     private List<Audio> audioList;
     protected DaoSession daoSession;
-    private AudioItemViewHolder preAudioItemViewHolder;
+    protected AudioItemViewHolder preAudioItemViewHolder;
     private int prePosition = -1;
 
     private AudioPlayer[] audioPlayers;
@@ -195,6 +196,9 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
             View audioPlayerLayout = itemView.findViewById(R.id.Audio_Player_LinearLayout);
             if (audioPlayerLayout.getVisibility() == View.GONE){
                 audioPlayerLayout.setVisibility(View.VISIBLE);
+                if (audioPlayer.getStatus() == AudioPlayer.PAUSED){
+                    holder.audioPlayProgress.setProgress((int)(audioPlayer.getSeekPosInMilliSec() * seekBarScale));
+                }
             } else {
                 audioPlayerLayout.setVisibility(View.GONE);
                 if (audioPlayer.getStatus() == AudioPlayer.PLAYING){
@@ -241,6 +245,40 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
         }
     }
 
+    public void adjustAudioPlayers(int action, int position) {
+        if (audioPlayers == null){
+            audioPlayers = new AudioPlayer[0];
+        }
+        switch (action){
+            case Constants.INSERT:
+                if (position < this.audioPlayers.length){
+                    AudioPlayer[] _audioPlayers = new AudioPlayer[this.audioPlayers.length+1];
+                    System.arraycopy(this.audioPlayers,0,_audioPlayers,0, position);
+                    System.arraycopy(this.audioPlayers,position,_audioPlayers,position + 1, this.audioPlayers.length - position);
+                    _audioPlayers[position] = new AudioPlayer();
+                    this.audioPlayers = _audioPlayers;
+                } else {
+                    AudioPlayer[] _audioPlayers = new AudioPlayer[position+1];
+                    System.arraycopy(this.audioPlayers,0,_audioPlayers,0,this.audioPlayers.length);
+                    for (int i = this.audioPlayers.length; i <= position; i++){
+                        _audioPlayers[i] = new AudioPlayer();
+                    }
+                    this.audioPlayers = _audioPlayers;
+                }
+                break;
+            case Constants.UPDATE:
+                break;
+            case Constants.DELETE:
+                if (position < this.audioPlayers.length){
+                    AudioPlayer[] _audioPlayers = new AudioPlayer[this.audioPlayers.length-1];
+                    this.audioPlayers[position].release();
+                    System.arraycopy(this.audioPlayers,0,_audioPlayers,0,position);
+                    System.arraycopy(this.audioPlayers,position+1,_audioPlayers,position,this.audioPlayers.length-1-position);
+                    this.audioPlayers = _audioPlayers;
+                }
+        }
+    }
+
     private void showDialog(Context context, AudioItemViewHolder holder, int position, List<Audio> audioList) {
         View view = LayoutInflater.from(context).inflate(R.layout.audio_item_more_layout,null,false);
         final AlertDialog moreDialog = new AlertDialog.Builder(context).setView(view).create();
@@ -284,9 +322,10 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
             moreDialog.dismiss();
             if (audioList != null){
                 Audio audio = audioList.remove(position);
+                adjustAudioPlayers(Constants.DELETE, position);
+                preAudioItemViewHolder = null;
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, audioList.size() - position);
-                preAudioItemViewHolder = null;
                 //delete from audio table
                 daoSession.getAudioDao().deleteByKey(audio.getId());
             }
