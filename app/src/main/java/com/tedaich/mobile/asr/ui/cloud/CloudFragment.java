@@ -61,7 +61,7 @@ public class CloudFragment extends Fragment {
         int userId = (int)sharedPreferences.getLong("CURRENT_USER_ID", -1);
         cloudViewModel.getAudioList(userId).observe(this, audio -> {
             if (cloudAudioItemAdapter != null){
-                cloudAudioItemAdapter.release();
+                cloudAudioItemAdapter.releaseAll();
             }
             cloudAudioItemAdapter = new CloudAudioItemAdapter(audio, daoSession, sharedPreferences, this);
             audioRecyclerView.setAdapter(cloudAudioItemAdapter);
@@ -119,5 +119,23 @@ public class CloudFragment extends Fragment {
                 //nothing
             }
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onStop() {
+        if (cloudAudioItemAdapter != null){
+            cloudAudioItemAdapter.releaseAll();
+        }
+        super.onStop();
     }
 }

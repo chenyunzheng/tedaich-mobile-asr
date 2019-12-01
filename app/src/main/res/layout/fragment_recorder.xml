@@ -6,11 +6,26 @@
     android:layout_height="match_parent"
     android:layout_centerHorizontal="false">
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fixedlist_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/recorder_top_guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="2"
+        tools:listitem="@layout/recorder_item_layout">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <FrameLayout
         android:id="@+id/AudioWave_LinearLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/translucent_background"
+        android:clickable="true"
+        android:focusable="true"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/recorder_top_guideline"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,22 +39,8 @@
             app:horizontal_half_offset="@integer/audio_wave_horizontal_half_offset"
             app:vertical_half_offset="@integer/audio_wave_vertical_half_offset"
             app:wave_count_per_pixel="1.0" />
-    </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fixedlist_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:itemCount="@integer/recycler_view_fixed_item_count"
-        tools:listitem="@layout/recorder_item_layout">
-
-    </androidx.recyclerview.widget.RecyclerView>
+    </FrameLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/recorder_top_guideline"
@@ -71,7 +72,7 @@
             <TextView
                 android:id="@+id/recorder_timer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center_vertical"
                 android:text="@string/recorder_timer"
                 android:textAlignment="center"

@@ -71,6 +71,7 @@ public class CloudAudioItemAdapter extends RecorderAudioItemAdapter {
         Button cloudMoreOptionBtn = holder.itemView.findViewById(R.id.cloud_item_more_option);
 
         cloudUploadBtn.setOnClickListener(v -> {
+            pauseAudioPlayer(holder, position);
             long gUserId = sharedPreferences.getLong("G_USER_ID", -1);
             if (gUserId != -1){
                 List<Audio> audioList = getAudioList();
@@ -81,6 +82,7 @@ public class CloudAudioItemAdapter extends RecorderAudioItemAdapter {
             }
         });
         cloudTransferTextBtn.setOnClickListener(v -> {
+            pauseAudioPlayer(holder, position);
             List<Audio> audioList = getAudioList();
             Audio audio = audioList.get(position);
             Intent intent = new Intent(v.getContext(), TransferTextActivity.class);
@@ -93,6 +95,7 @@ public class CloudAudioItemAdapter extends RecorderAudioItemAdapter {
             fragment.startActivityForResult(intent, Constants.REQUEST_CODE_TRANSFER_TEXT);
         });
         cloudMoreOptionBtn.setOnClickListener(v -> {
+            pauseAudioPlayer(holder, position);
             showDialog(v.getContext(), holder, position, super.getAudioList());
         });
 

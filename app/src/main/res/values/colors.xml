@@ -8,7 +8,7 @@
     <color name="app_background">#FFFFFF</color>
     <color name="app_gray_background">#ACACAC</color>
 
-    <color name="translucent_background">#25000000</color>
+    <color name="translucent_background">#C3000000</color>
     <color name="audio_item_more_item_background">#FF515658</color>
 
     <color name="dialog_edit_text_bottom_line">#2196F3</color>

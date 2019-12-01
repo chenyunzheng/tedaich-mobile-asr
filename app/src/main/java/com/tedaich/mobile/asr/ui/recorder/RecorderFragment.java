@@ -11,8 +11,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,7 +61,7 @@ public class RecorderFragment extends Fragment {
     private ImageButton iBtnSave;
     private TextView recorderTimer;
     private AudioWaveView audioWaveView;
-    private LinearLayout audioWaveLinearLayout;
+    private FrameLayout audioWaveFrameLayout;
     private RecyclerView fixedListRecyclerView;
     private RecorderAudioItemAdapter recorderAudioItemAdapter;
     private boolean isRecording = false;
@@ -100,7 +100,7 @@ public class RecorderFragment extends Fragment {
         iBtnSave = root.findViewById(R.id.btn_save);
         recorderTimer = root.findViewById(R.id.recorder_timer);
         audioWaveView = root.findViewById(R.id.audio_wave_view);
-        audioWaveLinearLayout = root.findViewById(R.id.AudioWave_LinearLayout);
+        audioWaveFrameLayout = root.findViewById(R.id.AudioWave_LinearLayout);
         fixedListRecyclerView = root.findViewById(R.id.fixedlist_recycler_view);
         prepareForAudioRecord();
         return root;
@@ -112,7 +112,7 @@ public class RecorderFragment extends Fragment {
         iBtnDelete.setOnClickListener(this::handleRecordDelete);
         iBtnSave.setVisibility(View.INVISIBLE);
         iBtnSave.setOnClickListener(this::handleRecordSave);
-        audioWaveLinearLayout.setVisibility(View.INVISIBLE);
+        audioWaveFrameLayout.setVisibility(View.INVISIBLE);
 
         fixedListRecyclerView.setHasFixedSize(true);
         fixedListRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -122,7 +122,7 @@ public class RecorderFragment extends Fragment {
         int userId = (int)sharedPreferences.getLong("CURRENT_USER_ID", -1);
         recorderViewModel.getAudioList(userId, getResources().getInteger(R.integer.recycler_view_fixed_item_count)).observe(this, audioList -> {
             if (recorderAudioItemAdapter != null){
-                recorderAudioItemAdapter.release();
+                recorderAudioItemAdapter.releaseAll();
             }
             recorderAudioItemAdapter = new RecorderAudioItemAdapter(audioList, daoSession);
             fixedListRecyclerView.setAdapter(recorderAudioItemAdapter);
@@ -149,7 +149,8 @@ public class RecorderFragment extends Fragment {
             //show delete or save icon
             iBtnDelete.setVisibility(View.VISIBLE);
             iBtnSave.setVisibility(View.VISIBLE);
-            audioWaveLinearLayout.setVisibility(View.VISIBLE);
+            audioWaveFrameLayout.setVisibility(View.VISIBLE);
+            recorderAudioItemAdapter.pauseAllAudioPlayer();
             //start/resume audio record
             if (requireNewRecordTask){
                 String defaultAudioName = getResources().getString(R.string.default_audio_name) + "_" + AndroidUtils.formatDate(new Date());
@@ -161,8 +162,17 @@ public class RecorderFragment extends Fragment {
                     if (recorderAudioItemAdapter != null){
                         List<Audio> audioList = recorderAudioItemAdapter.getAudioList();
                         audioList.add(0, audio);
+                        int size = audioList.size();
+                        int limited = getResources().getInteger(R.integer.recycler_view_fixed_item_count);
                         recorderAudioItemAdapter.notifyItemInserted(0);
-                        recorderAudioItemAdapter.notifyItemRangeChanged(0, audioList.size());
+                        recorderAudioItemAdapter.notifyItemRangeChanged(0, size);
+                        if (size > limited){
+                            audioList.remove(size - 1);
+                            recorderAudioItemAdapter.notifyItemRemoved(size - 1);
+                            recorderAudioItemAdapter.notifyItemRangeChanged(size - 1, 1);
+                            recorderAudioItemAdapter.release(size - 1);
+                            Toast.makeText(this.getContext(), "Only latest " + limited + " audio records show here", Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
                 if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED){
@@ -212,6 +222,9 @@ public class RecorderFragment extends Fragment {
         if (timerAudioService != null){
             timerAudioService.stop();
         }
+        if (recorderAudioItemAdapter != null){
+            recorderAudioItemAdapter.releaseAll();
+        }
         super.onStop();
     }
 
@@ -233,7 +246,7 @@ public class RecorderFragment extends Fragment {
                     requireNewRecordTask = true;
                     isRecording = false;
                     recorderTimer.setText(R.string.recorder_timer);
-                    audioWaveLinearLayout.setVisibility(View.INVISIBLE);
+                    audioWaveFrameLayout.setVisibility(View.INVISIBLE);
                     iBtnDelete.setVisibility(View.INVISIBLE);
                     iBtnSave.setVisibility(View.INVISIBLE);
                 })
@@ -267,7 +280,7 @@ public class RecorderFragment extends Fragment {
                     requireNewRecordTask = true;
                     isRecording = false;
                     recorderTimer.setText(R.string.recorder_timer);
-                    audioWaveLinearLayout.setVisibility(View.INVISIBLE);
+                    audioWaveFrameLayout.setVisibility(View.INVISIBLE);
                     iBtnDelete.setVisibility(View.INVISIBLE);
                     iBtnSave.setVisibility(View.INVISIBLE);
                 })

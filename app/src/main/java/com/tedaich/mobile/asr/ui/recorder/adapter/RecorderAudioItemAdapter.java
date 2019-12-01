@@ -82,6 +82,7 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
     private List<Audio> audioList;
     protected DaoSession daoSession;
     private AudioItemViewHolder preAudioItemViewHolder;
+    private int prePosition = -1;
 
     private AudioPlayer[] audioPlayers;
 
@@ -129,6 +130,7 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
         AudioPlayer audioPlayer = this.audioPlayers[position];
 
         holder.moreBtn.setOnClickListener(view -> {
+            pauseAudioPlayer(holder, position);
             showDialog(view.getContext(), holder, position, audioList);
         });
         holder.audioPlayerBtn.setOnClickListener(view -> {
@@ -183,13 +185,13 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
         holder.itemView.setOnClickListener(itemView -> {
             if (preAudioItemViewHolder != null && preAudioItemViewHolder != holder){
                 preAudioItemViewHolder.itemView.findViewById(R.id.Audio_Player_LinearLayout).setVisibility(View.GONE);
-                AudioPlayer preAudioPlayer = audioPlayers[preAudioItemViewHolder.getLayoutPosition()];
+                AudioPlayer preAudioPlayer = audioPlayers[prePosition];
                 if (preAudioPlayer != null && preAudioPlayer.getStatus() == AudioPlayer.PLAYING){
                     preAudioPlayer.pause();
                     preAudioItemViewHolder.isPlaying = false;
                 }
             }
-            preAudioItemViewHolder = holder;
+            preAudioItemViewHolder = holder; prePosition = position;
             View audioPlayerLayout = itemView.findViewById(R.id.Audio_Player_LinearLayout);
             if (audioPlayerLayout.getVisibility() == View.GONE){
                 audioPlayerLayout.setVisibility(View.VISIBLE);
@@ -212,9 +214,30 @@ public class RecorderAudioItemAdapter extends Adapter<RecorderAudioItemAdapter.A
         return audioList;
     }
 
-    public void release() {
+    public void release(int position) {
+        if (audioPlayers != null && position < audioPlayers.length){
+            audioPlayers[position].release();
+        }
+    }
+
+    public void releaseAll() {
         for (AudioPlayer audioPlayer : audioPlayers) {
             audioPlayer.release();
+        }
+    }
+
+    protected void pauseAudioPlayer(AudioItemViewHolder holder, int position){
+        if (holder.isPlaying){
+            holder.audioPlayerBtn.setImageDrawable(resources.getDrawable(R.drawable.ic_play_circle_outline));
+            audioPlayers[position].pause();
+            holder.isPlaying = false;
+        }
+    }
+
+    public void pauseAllAudioPlayer() {
+        //only one audio player playing
+        if (preAudioItemViewHolder != null && prePosition != -1){
+            pauseAudioPlayer(preAudioItemViewHolder, prePosition);
         }
     }
 
